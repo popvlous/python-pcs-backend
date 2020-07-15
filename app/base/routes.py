@@ -142,7 +142,7 @@ def add():
 @blueprint.route('/edit',methods=['GET', 'POST'])
 @login_required
 def edit():
-    menus, menus1 = getmenus_no_id()
+    menus, menus1, menus_id = getmenus(10)
     users = User.query.filter().all()
     user_id = request.args.get('mid')
     userinfo = User.query.filter_by(id=user_id).first()
@@ -164,7 +164,7 @@ def edit():
 @login_required
 def delete():
     message = None
-    menus, menus1 = getmenus_no_id()
+    menus, menus1, menus_id = getmenus(8)
     users = User.query.filter().all()
     user_id = request.args.get('mid')
     if user_id!=None:
@@ -173,7 +173,8 @@ def delete():
             db.session.commit()
         except:
             message = "讀取錯誤!"
-    return render_template( 'accounts/list.html', segment='list', menus=menus, menus1=menus1, users=users)
+    usersinfo = User.query.filter().all()
+    return render_template( 'accounts/list.html', segment='list', menus=menus, menus1=menus1, users=usersinfo)
 
 ## Errors
 

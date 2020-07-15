@@ -8,7 +8,7 @@ from flask import Blueprint
 blueprint = Blueprint(
     'menu_blueprint',
     __name__,
-    url_prefix='',
+    url_prefix='/backend',
     template_folder='templates',
     static_folder='static'
 )

@@ -159,7 +159,7 @@ def menuedit():
 @login_required
 def menudel():
     message = None
-    menus, menus1 = getmenus_no_id()
+    menus, menus1, menu_id = getmenus(2)
     menu_id = request.args.get('mid')
     if menu_id != None:
         try:
