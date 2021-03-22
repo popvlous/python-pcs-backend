@@ -1,0 +1,140 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables Data {% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>顯示User資料表所有資料</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">User</a></li>
+                            <li class="breadcrumb-item active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <form action="/accounts/list" method="POST" name="form1">
+                                <div class="card-header">
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <!--                <td>類別ID</td>-->
+                                            <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
+                                            <td>使用者名稱</td>
+                                            <td><input type="text" id="menu_name" name="menu_name" class="form-control"
+                                                       placeholder="category description"/></td>
+                                            <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
+                                                                   class="btn btn-primary btn-xs">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="card-body">
+                                    <table id="TableMenuList" class="table table-bordered table-striped">
+                                        <thead>
+                                        <th>序號</th>
+                                        <th>使用者名稱</th>
+                                        <th>電子郵箱</th>
+                                        <th>性別</th>
+                                        <th>生日</th>
+                                        <th>手機</th>
+                                        <th>操作</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{ user.id }}  </td>
+                                                <td>{{ user.username }}  </td>
+                                                <td>{{ user.email }}  </td>
+                                                <td>{{ user.Gender }}  </td>
+                                                <td>{{ user.Birthday }}  </td>
+                                                <td>{{ user.Mobile }}  </td>
+                                                <td>
+                                                    <a href="{{url_for('base_blueprint.edit', mid=user.id)}}" class="btn btn-primary btn-xs"
+                                                       title="編輯">編輯 </a>
+                                                    <a href="{{url_for('base_blueprint.delete', mid=user.id)}}" class="btn btn-primary btn-xs"
+                                                       title="刪除">刪除</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <span style="color:red">{{ message }}</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <!-- jQuery -->
+    <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/assets/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/static/assets/js/demo.js"></script>
+    <!-- page script -->
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+            });
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

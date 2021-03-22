@@ -1,0 +1,159 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables Data {% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h2>修改菜單</h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Menu</a></li>
+                            <li class="breadcrumb-item active">Edit</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <form method="POST" action="{{url_for('menu_blueprint.menuadd')}}">   <!-- "."表示執行相同的url -->
+                                {#                                {% csrf_token %}#}
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">修改菜單訊息</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        菜單階層：<select id="menu_type" name="menu_type">
+                                        <option value="0" {% if menuinfo.MenuType == 0 %} selected="selected" {% endif %}>未選擇</option>
+                                        <option value="1" {% if menuinfo.MenuType == 1 %} selected="selected" {% endif %}>一階</option>
+                                        <option value="2" {% if menuinfo.MenuType == 2 %} selected="selected" {% endif %}>二階</option>
+                                    </select>
+                                    </div>
+                                    <div class="form-group" id="mtop" {% if menuinfo.MenuType == 2 %} style="display: none;" {% else %} style="display:;" {% endif %}>
+                                        <label for="Menu_top">上層菜單</label>
+                                        <select class="form-control" id="menu_top" name="menu_top">
+                                            {% for menutop in menutops %}
+                                                <option value={{ menutop.id }}>{{ menutop.MenuName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="mtarget" {% if menuinfo.MenuType == 1 %} style="display: none;" {% else %} style="display:;" {% endif %}>
+                                        <label for="menu_bp">blueprint</label>
+                                        <input type="text" class="form-control" id="menu_bp" name="menu_bp"
+                                               placeholder="Menu Blueprint">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MenuName">菜單名稱</label>
+                                        <input type="text" class="form-control" id="menu_name" name="menu_name" value="{{ menuinfo.MenuName }}"
+                                               placeholder="Menu Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MenuUrl">連結</label>
+                                        <input type="text" class="form-control" id="menu_url" name="menu_url" value="{{ menuinfo.MenuUrl }}"
+                                               placeholder="Menu URL">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MenuSort">順序</label>
+                                        <input type="text" class="form-control" id="menu_sort" name="menu_sort" value="{{ menuinfo.MenuSort }}"
+                                               placeholder="Menu Sort">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" name="button" id="button" value="送出"
+                                               class="btn btn-primary btn-xs">
+                                        <input type="reset" name="button2" id="button2" value="重設"
+                                               class="btn btn-primary btn-xs">
+                                    </div>
+                                    <span style="color:red">{{ message }}</span>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <!-- jQuery -->
+    <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/assets/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/static/assets/js/demo.js"></script>
+    <!-- page script -->
+    <script>
+
+        $(function () {
+            $('#TableMenuList').DataTable({
+                "paging": true,       <!-- 允许分页 -->
+                "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+                "searching": true,    <!-- 允许内容搜索 -->
+                "ordering": true,     <!-- 允许排序 -->
+                "info": true,         <!-- 显示信息 -->
+                "autoWidth": false    <!-- 固定宽度 -->
+            });
+        })
+
+        {#        $("#btnAddComment").click(function () {
+                    insertWord($("#txtCommentAdd").val());
+                });#}
+
+        $("#menu_type").change(function () {
+            insertMenu()
+        });
+
+        function insertMenu() {
+            if ($('#menu_type').val() == 0) {
+                document.getElementById("mtop").style.display = "none"
+                document.getElementById("mtarget").style.display = "none"
+                alert("請先選擇菜單類型")
+            } else if ($('#menu_type').val() == 2) {
+                document.getElementById("mtop").style.display = ""
+                document.getElementById("mtarget").style.display = "none"
+            }else {
+                 document.getElementById("mtop").style.display = "none"
+                document.getElementById("mtarget").style.display = ""
+            }
+        }
+    </script>
+
+{% endblock javascripts %}

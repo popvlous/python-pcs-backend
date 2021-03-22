@@ -1,0 +1,128 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables Data {% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>顯示訂單資料表所有資料</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Orders</a></li>
+                            <li class="breadcrumb-item active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <form action="" method="POST" name="form1">
+                                <div class="card-header">
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <!--                <td>類別ID</td>-->
+                                            <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
+                                            <td>訂單單號</td>
+                                            <td><input type="text" id="menu_name" name="menu_name" class="form-control"
+                                                       placeholder="category description"/></td>
+                                            <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
+                                                                   class="btn btn-primary btn-xs">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="card-body">
+                                    <table id="TableMenuList" class="table table-bordered table-striped">
+                                        <thead>
+                                        <th>訂單號碼</th>
+                                        <th>訂單狀態</th>
+                                        <th>訂購人姓氏</th>
+                                        <th>訂購人名子</th>
+                                        <th>操作</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for order in orders %}
+                                            <tr>
+                                                <td>{{ order.order_id }}  </td>
+                                                <td>{{ order.state }}  </td>
+                                                <td>{{ order.billing_first_name }}  </td>
+                                                <td>{{ order.billing_last_name }}  </td>
+                                                <td>
+                                                    <a href="{{url_for('orders.orderlist', mid=order.id)}}" class="btn btn-primary btn-xs"
+                                                       title="編輯">編輯 </a>
+                                                    <a href="{{url_for('orders.orderlist', mid=order.id)}}" class="btn btn-primary btn-xs"
+                                                       title="刪除">刪除</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <span style="color:red">{{ message }}</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <!-- jQuery -->
+    <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/assets/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/static/assets/js/demo.js"></script>
+    <!-- page script -->
+    <script>
+
+        $(function () {
+            $('#TableMenuList').DataTable({
+                "paging": true,       <!-- 允许分页 -->
+                "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+                "searching": true,    <!-- 允许内容搜索 -->
+                "ordering": true,     <!-- 允许排序 -->
+                "info": true,         <!-- 显示信息 -->
+                "autoWidth": false    <!-- 固定宽度 -->
+            });
+        })
+    </script>
+
+{% endblock javascripts %}
