@@ -14,19 +14,32 @@ from flask_login import (
 from app import db, login_manager
 from app.base import blueprint
 from app.base.forms import LoginForm, CreateAccountForm
-from app.base.models import User
+from app.base.models import User, Orders, SysMenu
 
-from app.base.util import verify_pass
+from app.base.util import verify_pass, hash_pass
+from app.menu.routes import getmenus_no_id, getmenus
+
 
 @blueprint.route('/')
 def route_default():
     return redirect(url_for('base_blueprint.login'))
+
+# def getmenus(Path=None):
+#     menus = SysMenu.query.filter().all()
+#     menus1 = SysMenu.query.filter().all()
+#     menus2 = SysMenu.query.filter_by(MenuUrl=Path).first()
+#     menus_id = menus2.ParentId
+#     return menus, menus1, menus_id
 
 ## Login & Registration
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
+    #menus, menus1 = getmenus()
+    menus = SysMenu.query.filter().all()
+    menus1 = SysMenu.query.filter().all()
+    url = menus1[0].MenuUrl
     if 'login' in request.form:
         
         # read form data
@@ -35,6 +48,8 @@ def login():
 
         # Locate user
         user = User.query.filter_by(username=username).first()
+        order = Orders.query.filter_by(order_id=1702).first()
+
         
         # Check the password
         if user and verify_pass( password, user.password):
@@ -48,7 +63,7 @@ def login():
     if not current_user.is_authenticated:
         return render_template( 'accounts/login.html',
                                 form=login_form)
-    return redirect(url_for('home_blueprint.index'))
+    return redirect(url_for('home_blueprint.index', menus=menus, menus1=menus1))
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -92,6 +107,67 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('base_blueprint.login'))
+
+@blueprint.route('/list')
+def list():
+    menus, menus1, menus_id = getmenus(8)
+    users = User.query.filter().all()
+    return render_template( 'accounts/list.html', users=users, menu_id=int(menus_id), segment='list', menus=menus, menus1=menus1)
+
+@blueprint.route('/add',methods=['GET', 'POST'])
+def add():
+    menus, menus1, menus_id = getmenus(10)
+    users = User.query.filter().all()
+    if request.method == "POST":
+        username = None
+        email = None
+        password = None
+        if 'username' in request.form:
+            username = request.form['username']
+        if 'email' in request.form:
+            email = request.form['email']
+        if 'password' in request.form:
+            password = request.form['password']
+        user = User(**request.form)
+        db.session.add(user)
+        db.session.commit()
+        newusers = User.query.filter().all()
+        return render_template('accounts/list.html', users=newusers, segment='list', menus=menus, menus1=menus1)
+    return render_template( 'accounts/add1.html', users=users, menu_id=int(menus_id), segment='list', menus=menus, menus1=menus1)
+
+@blueprint.route('/edit',methods=['GET', 'POST'])
+def edit():
+    menus, menus1 = getmenus_no_id()
+    users = User.query.filter().all()
+    user_id = request.args.get('mid')
+    userinfo = User.query.filter_by(id=user_id).first()
+    if request.method == "POST": # 如果是以POST的方式才處理
+        username = None
+        email = None
+        if 'username' in request.form:
+            username = request.form['username']
+        if 'email' in request.form:
+            email = request.form['email']
+        User.query.filter_by(id=user_id).update(dict(username=username, email=email))
+        db.session.commit()
+        newusers = User.query.filter().all()
+        return render_template('accounts/list.html', users=newusers, segment='list', menus=menus, menus1=menus1,
+                               user=userinfo)
+    return render_template( 'accounts/edit.html', users=users, segment='edit', menus=menus, menus1=menus1, user=userinfo)
+
+@blueprint.route('/delete',methods=['GET', 'POST'])
+def delete():
+    message = None
+    menus, menus1 = getmenus_no_id()
+    users = User.query.filter().all()
+    user_id = request.args.get('mid')
+    if user_id!=None:
+        try:
+            User.query.filter_by(id=user_id).delete()  #取得id欄位的資料
+            db.session.commit()
+        except:
+            message = "讀取錯誤!"
+    return render_template( 'accounts/list.html', segment='list', menus=menus, menus1=menus1, users=users)
 
 ## Errors
 

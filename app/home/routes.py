@@ -8,17 +8,20 @@ from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from app import login_manager
 from jinja2 import TemplateNotFound
+from app.base.models import User, Orders, SysMenu
 
 @blueprint.route('/index')
 @login_required
 def index():
-
-    return render_template('index.html', segment='index.html')
+    menus = SysMenu.query.filter().all()
+    menus1 = SysMenu.query.filter().all()
+    return render_template('index.html', segment='index.html', menus=menus, menus1=menus1)
 
 @blueprint.route('/<template>')
 @login_required
 def route_template(template):
-
+    menus = SysMenu.query.filter().all()
+    menus1 = SysMenu.query.filter().all()
     try:
 
         if not template.endswith( '.html' ):
@@ -28,7 +31,7 @@ def route_template(template):
         segment = get_segment( request )
 
         # Serve the file (if exists) from app/templates/FILE.html
-        return render_template( template, segment=segment )
+        return render_template( template, segment=segment , menus=menus, menus1=menus1)
 
     except TemplateNotFound:
         return render_template('page-404.html'), 404
