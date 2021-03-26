@@ -6,7 +6,7 @@ Copyright (c) 2019 - present AppSeed.us
 import os
 import pymysql
 pymysql.install_as_MySQLdb()
-from   decouple import config
+from decouple import config
 
 class Config(object):
 
@@ -38,10 +38,10 @@ class ProductionConfig(Config):
     # PostgreSQL database
     SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}'.format(
         config( 'DB_ENGINE'   , default='mysql'    ),
-        config( 'DB_USERNAME' , default='pcs'       ),
-        config( 'DB_PASS'     , default='Foxconn@890'          ),
-        config( 'DB_HOST'     , default='192.168.100.14'     ),
-        config( 'DB_PORT'     , default=3309            ),
+        config( 'DB_USERNAME' , default='pyrarcdev'       ),
+        config( 'DB_PASS'     , default='dev2021api0322'          ),
+        config( 'DB_HOST'     , default='192.168.110.18'     ),
+        config( 'DB_PORT'     , default=3306            ),
         config( 'DB_NAME'     , default='pcs' )
     )
 

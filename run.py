@@ -34,5 +34,7 @@ if DEBUG:
     app.logger.info('Environment = ' + get_config_mode )
     app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI )
 
+
+#.ENV檔案中設定測試環境DEBUG=True , 正式環境DEBUG=False
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=app.config['DEBUG'])
+    app.run(host='0.0.0.0', port=5001)
