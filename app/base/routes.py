@@ -109,12 +109,14 @@ def logout():
     return redirect(url_for('base_blueprint.login'))
 
 @blueprint.route('/list')
+@login_required
 def list():
     menus, menus1, menus_id = getmenus(8)
     users = User.query.filter().all()
     return render_template( 'accounts/list.html', users=users, menu_id=int(menus_id), segment='list', menus=menus, menus1=menus1)
 
 @blueprint.route('/add',methods=['GET', 'POST'])
+@login_required
 def add():
     menus, menus1, menus_id = getmenus(10)
     users = User.query.filter().all()
@@ -136,6 +138,7 @@ def add():
     return render_template( 'accounts/add1.html', users=users, menu_id=int(menus_id), segment='list', menus=menus, menus1=menus1)
 
 @blueprint.route('/edit',methods=['GET', 'POST'])
+@login_required
 def edit():
     menus, menus1 = getmenus_no_id()
     users = User.query.filter().all()
@@ -156,6 +159,7 @@ def edit():
     return render_template( 'accounts/edit.html', users=users, segment='edit', menus=menus, menus1=menus1, user=userinfo)
 
 @blueprint.route('/delete',methods=['GET', 'POST'])
+@login_required
 def delete():
     message = None
     menus, menus1 = getmenus_no_id()

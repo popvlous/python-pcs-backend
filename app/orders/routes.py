@@ -1,10 +1,12 @@
 from flask import render_template
 from app.base.models import User, Orders, SysMenu
+from flask_login import login_required, current_user
 from app.menu.routes import getmenus
 from app.orders import blueprint
 
 
 @blueprint.route('/orderlist')
+@login_required
 def orderlist():
     menus, menus1, menus_id = getmenus(12)
     orders = Orders.query.filter().all()

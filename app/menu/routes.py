@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_login import login_required, current_user
 from app.menu import blueprint
 from app.base.models import User, Orders, SysMenu
 from app import db
@@ -26,6 +27,7 @@ def getmenus_no_id():
 
 
 @blueprint.route('/menuindex')
+@login_required
 def menuindex():
     menus = SysMenu.query.filter().all()
     menus1 = SysMenu.query.filter().all()
@@ -33,12 +35,14 @@ def menuindex():
 
 
 @blueprint.route('/menulist')
+@login_required
 def menulist():
     menus, menus1, menus_id = getmenus(2)
     return render_template('list.html', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1)
 
 
 @blueprint.route('/menuadd', methods=['GET', 'POST'])
+@login_required
 def menuadd():
     message = None
     menus, menus1, menus_id = getmenus(3)
@@ -79,6 +83,7 @@ def menuadd():
     return render_template('add1.html', menu_id=int(menus_id), segment='menuadd', menus=menus, menus1=menus1,
                            menutops=menutops)
 @blueprint.route('/menuedit', methods=['GET', 'POST'])
+@login_required
 def menuedit():
     message = None
     menus, menus1 = getmenus_no_id()
@@ -119,6 +124,7 @@ def menuedit():
                            menuinfo=menu_info, menutops=menutops)
 
 @blueprint.route('/menudel', methods=['GET', 'POST'])
+@login_required
 def menudel():
     message = None
     menus, menus1 = getmenus_no_id()
