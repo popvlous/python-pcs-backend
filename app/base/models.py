@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String
+from sqlalchemy import LargeBinary, Column, Integer, String
 from app import db, login_manager
 from app.base.util import hash_pass
 from datetime import datetime
@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
     email = Column(String, unique=True)
-    password = Column(Binary)
+    password = Column(LargeBinary)
     BaseCreateTime = Column(db.DateTime, nullable=True)
     BaseCreatorId = Column(db.Integer, nullable=True)
     BaseModifyTime = Column(db.DateTime, nullable=True)
