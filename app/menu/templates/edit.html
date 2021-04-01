@@ -43,7 +43,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <form method="POST" action="{{url_for('menu_blueprint.menuadd')}}">   <!-- "."表示執行相同的url -->
+                            <form method="POST" action="{{url_for('menu_blueprint.menuedit', mid=menuinfo.id)}}">   <!-- "."表示執行相同的url -->
                                 {#                                {% csrf_token %}#}
                                 <div class="card card-primary">
                                     <div class="card-header">
@@ -58,15 +58,15 @@
                                         <option value="2" {% if menuinfo.MenuType == 2 %} selected="selected" {% endif %}>二階</option>
                                     </select>
                                     </div>
-                                    <div class="form-group" id="mtop" {% if menuinfo.MenuType == 2 %} style="display: none;" {% else %} style="display:;" {% endif %}>
+                                    <div class="form-group" id="mtop" {% if menuinfo.MenuType == 1 %} style="display: none;" {% else %} style="display:;" {% endif %}>
                                         <label for="Menu_top">上層菜單</label>
                                         <select class="form-control" id="menu_top" name="menu_top">
                                             {% for menutop in menutops %}
-                                                <option value={{ menutop.id }}>{{ menutop.MenuName }}</option>
+                                                <option value={{ menutop.id }} {% if menutop.id == menuinfo.ParentId %} selected="selected" {% endif %}>{{ menutop.MenuName }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="form-group" id="mtarget" {% if menuinfo.MenuType == 1 %} style="display: none;" {% else %} style="display:;" {% endif %}>
+                                    <div class="form-group" id="mtarget" {% if menuinfo.MenuType == 2 %} style="display: none;" {% else %} style="display:;" {% endif %}>
                                         <label for="menu_bp">blueprint</label>
                                         <input type="text" class="form-control" id="menu_bp" name="menu_bp"
                                                placeholder="Menu Blueprint">

@@ -115,8 +115,11 @@ def menuedit():
             parent_menu = SysMenu.query.filter_by(id=menu_top).first()
             menu_target = parent_menu.MenuTarget
             parent_id = parent_menu.id
-        menus_info = SysMenu(menu_name, parent_id, menu_url, int(menu_sort), int(menu_type), menu_target)
-        db.session.add(menus_info)
+        (menu_name, parent_id, menu_url, int(menu_sort), int(menu_type), menu_target)
+        menu_info.MenuName = menu_name
+        menu_info.ParentId = parent_id
+        menu_info.MenuUrl = menu_url
+        menu_info.MenuTarget = menu_target
         db.session.commit()
     else:
         message = '請輸入資料(資料不作驗證)'
@@ -136,3 +139,6 @@ def menudel():
         except:
             message = "讀取錯誤!"
     return render_template('list.html', segment='menulist', menus=menus, menus1=menus1)
+
+
+

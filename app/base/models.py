@@ -72,6 +72,11 @@ class Orders(db.Model):
     state = db.Column(db.String(50), nullable=True)
     billing_first_name = db.Column(db.String(50), nullable=True)
     billing_last_name = db.Column(db.String(50), nullable=True)
+    date_created = db.Column(db.DateTime, nullable=True)
+    total = db.Column(db.Integer, nullable=True)
+    billing_state = db.Column(db.String(50), nullable=True)
+    billing_city = db.Column(db.String(50), nullable=True)
+    billing_address_1 = db.Column(db.String(500), nullable=True )
 
     def __init__(self, order_id, parent_id, state, billing_first_name, billing_last_name):
         self.order_id = order_id
