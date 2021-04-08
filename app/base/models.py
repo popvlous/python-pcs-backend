@@ -5,6 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_login import UserMixin
 from sqlalchemy import LargeBinary, Column, Integer, String
+from sqlalchemy.orm import relationship, backref
+
 from app import db, login_manager
 from app.base.util import hash_pass
 from datetime import datetime
@@ -35,6 +37,7 @@ class User(db.Model, UserMixin):
     Remark = Column(db.String(255), nullable=True)
     WebToken = Column(db.String(255), nullable=True)
     ApiToken = Column(db.String(255), nullable=True)
+    roleusers = relationship('RolesUsers', backref=backref('RolesUsers', order_by=id))
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -86,7 +89,7 @@ class Orders(db.Model):
         self.billing_last_name = billing_last_name
 
 class SysMenu(db.Model):
-    __table__name = 'sysmenu'
+    __table__name = 'sys_menu'
     # 設定 primary_key
     id = Column(db.Integer, primary_key=True)
     BaseIsDelete = Column(db.Integer, nullable=True)

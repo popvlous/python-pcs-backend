@@ -9,12 +9,15 @@ from flask_login import login_required, current_user
 from app import login_manager
 from jinja2 import TemplateNotFound
 from app.base.models import User, Orders, SysMenu
+from app.menu.routes import getmenus
+
 
 @blueprint.route('/index')
 @login_required
 def index():
-    menus = SysMenu.query.filter().all()
-    menus1 = SysMenu.query.filter().all()
+    #menus = SysMenu.query.filter().all()
+    #menus1 = SysMenu.query.filter().all()
+    menus, menus1, menus_id = getmenus(3)
     return render_template('index.html', segment='index.html', menus=menus, menus1=menus1)
 
 @blueprint.route('/<template>')

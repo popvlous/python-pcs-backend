@@ -45,20 +45,20 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 {% for menu in menus %}
-                {% if menu.ParentId == 0 %}
-                <li class="nav-item has-treeview {% if menu.id == menu_id %} menu-open {% endif %}">
-                    <a href="#" class="nav-link {% if menu.id == menu_id %} active {% endif %}">
+                {% if menu.menu.ParentId == 0 %}
+                <li class="nav-item has-treeview {% if menu.menu.id == menu_id %} menu-open {% endif %}">
+                    <a href="#" class="nav-link {% if menu.menu.id == menu_id %} active {% endif %}">
                         <i class="nav-icon fas fa-book"></i>
                         <p>
-                            {{ menu.MenuName }}
+                            {{ menu.menu.MenuName }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     {% endif %}
                     <ul class="nav nav-treeview">
                     {% for menu1 in menus1 %}
-                    {% if menu1.ParentId == menu.id %}
-                        <li class="nav-item" ><a href="{{ url_for('{}.{}'.format(menu1.MenuTarget,menu1.MenuUrl)) }}" class="nav-link {% if menu1.MenuUrl == segment %} active {% endif %}" ><i class="far fa-circle nav-icon"></i>{{menu1.MenuName}}</a></li>
+                    {% if menu1.menu.ParentId == menu.menu.id %}
+                        <li class="nav-item" ><a href="{{ url_for('{}.{}'.format(menu1.menu.MenuTarget,menu1.menu.MenuUrl)) }}" class="nav-link {% if menu1.menu.MenuUrl == segment %} active {% endif %}" ><i class="far fa-circle nav-icon"></i>{{menu1.menu.MenuName}}</a></li>
                     {% endif %}
                     {% endfor %}
                     </ul>

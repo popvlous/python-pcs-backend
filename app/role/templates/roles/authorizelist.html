@@ -22,19 +22,17 @@
 {% endblock stylesheets %}
 
 {% block content %}
-
-    <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+    <div class="content-wrapper">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>顯示User資料表所有資料</h1>
+                        <h1>角色菜單權限</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">User</a></li>
-                            <li class="breadcrumb-item active">List</li>
+                            <li class="breadcrumb-item"><a href="#">Roles</a></li>
+                            <li class="breadcrumb-item active">Authorize</li>
                         </ol>
                     </div>
                 </div>
@@ -45,13 +43,13 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <form action="/accounts/list" method="POST" name="form1">
+                            <form action="" method="POST" name="form1">
                                 <div class="card-header">
                                     <table class="table table-bordered table-striped">
                                         <tr>
                                             <!--                <td>類別ID</td>-->
                                             <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
-                                            <td>使用者名稱</td>
+                                            <td>權限列表</td>
                                             <td><input type="text" id="menu_name" name="menu_name" class="form-control"
                                                        placeholder="category description"/></td>
                                             <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
@@ -63,29 +61,25 @@
                                 <div class="card-body">
                                     <table id="TableMenuList" class="table table-bordered table-striped">
                                         <thead>
-                                        <th>序號</th>
-                                        <th>使用者名稱</th>
-                                        <th>電子郵箱</th>
-                                        <th>性別</th>
-                                        <th>生日</th>
-                                        <th>手機</th>
-                                        <th>角色</th>
+                                        <th>id</th>
+                                        <th>菜單id</th>
+                                        <th>菜單名稱</th>
+                                        <th>角色id</th>
+                                        <th>角色名稱<th>
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
-                                        {% for user in users %}
+                                        {% for auth in authorizes %}
                                             <tr>
-                                                <td>{{ user.id }}  </td>
-                                                <td>{{ user.username }}  </td>
-                                                <td>{{ user.email }}  </td>
-                                                <td>{{ user.Gender }}  </td>
-                                                <td>{{ user.Birthday }}  </td>
-                                                <td>{{ user.Mobile }}  </td>
-                                                <td>{% for roleuser in user.roleusers %} {{ roleuser.role.role_name }} <br> {% endfor %}</td>
+                                                <td>{{ auth.id }}  </td>
+                                                <td>{{ auth.menu_id }}  </td>
+                                                <td>{{ auth.menu.MenuName }}  </td>
+                                                <td>{{ auth.role_id }}  </td>
+                                                <td>{{ auth.role.role_name }}  </td>
                                                 <td>
-                                                    <a href="{{url_for('base_blueprint.edit', mid=user.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.authorizelist', mid=auth.id)}}" class="btn btn-primary btn-xs"
                                                        title="編輯">編輯 </a>
-                                                    <a href="{{url_for('base_blueprint.delete', mid=user.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.authorizelist', mid=auth.id)}}" class="btn btn-primary btn-xs"
                                                        title="刪除">刪除</a>
                                                 </td>
                                             </tr>
@@ -101,9 +95,7 @@
             </div>
         </section>
     </div>
-
 {% endblock content %}
-
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
@@ -122,21 +114,17 @@
     <script src="/static/assets/js/demo.js"></script>
     <!-- page script -->
     <script>
+
         $(function () {
-            $("#example1").DataTable({
-                "responsive": true,
-                "autoWidth": false,
+            $('#TableMenuList').DataTable({
+                "paging": true,       <!-- 允许分页 -->
+                "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+                "searching": true,    <!-- 允许内容搜索 -->
+                "ordering": true,     <!-- 允许排序 -->
+                "info": true,         <!-- 显示信息 -->
+                "autoWidth": false    <!-- 固定宽度 -->
             });
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
+        })
     </script>
 
 {% endblock javascripts %}

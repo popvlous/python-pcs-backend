@@ -36,10 +36,9 @@ def route_default():
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
-    #menus, menus1 = getmenus()
-    menus = SysMenu.query.filter().all()
-    menus1 = SysMenu.query.filter().all()
-    url = menus1[0].MenuUrl
+    #menus = SysMenu.query.filter().all()
+    #menus1 = SysMenu.query.filter().all()
+    #url = menus1[0].menu.MenuUrl
     if 'login' in request.form:
         
         # read form data
@@ -63,6 +62,10 @@ def login():
     if not current_user.is_authenticated:
         return render_template( 'accounts/login.html',
                                 form=login_form)
+    if current_user.is_active:
+        menus, menus1, menus_id = getmenus(3)
+    else:
+        menus, menus1, = getmenus_no_id()
     return redirect(url_for('home_blueprint.index', menus=menus, menus1=menus1))
 
 @blueprint.route('/register', methods=['GET', 'POST'])

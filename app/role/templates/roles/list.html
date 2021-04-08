@@ -61,23 +61,23 @@
                                 <div class="card-body">
                                     <table id="TableMenuList" class="table table-bordered table-striped">
                                         <thead>
-                                        <th>訂單號碼</th>
-                                        <th>訂單狀態</th>
-                                        <th>訂購人姓氏</th>
-                                        <th>訂購人名子</th>
+                                        <th>id</th>
+                                        <th>角色名稱</th>
+                                        <th>角色狀態</th>
+                                        <th>角色創建時間</th>
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
-                                        {% for order in orders %}
+                                        {% for role in roles %}
                                             <tr>
-                                                <td>{{ order.order_id }}  </td>
-                                                <td>{{ order.state }}  </td>
-                                                <td>{{ order.billing_first_name }}  </td>
-                                                <td>{{ order.billing_last_name }}  </td>
+                                                <td>{{ role.id }}  </td>
+                                                <td>{{ role.role_name }}  </td>
+                                                <td>{{ role.role_status }}  </td>
+                                                <td>{{ role.base_create_time }}  </td>
                                                 <td>
-                                                    <a href="{{url_for('orders.orderlist', mid=order.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.rolelist', mid=role.id)}}" class="btn btn-primary btn-xs"
                                                        title="編輯">編輯 </a>
-                                                    <a href="{{url_for('orders.orderlist', mid=order.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.rolelist', mid=role.id)}}" class="btn btn-primary btn-xs"
                                                        title="刪除">刪除</a>
                                                 </td>
                                             </tr>
