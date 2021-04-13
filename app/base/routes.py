@@ -47,7 +47,6 @@ def login():
 
         # Locate user
         user = User.query.filter_by(username=username).first()
-        order = Orders.query.filter_by(order_id=1702).first()
 
         
         # Check the password
