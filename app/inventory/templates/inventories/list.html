@@ -27,11 +27,11 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>顯示訂單資料表所有資料</h1>
+                        <h1>顯示寄存資料表所有資料</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Orders</a></li>
+                            <li class="breadcrumb-item"><a href="#">Inventories</a></li>
                             <li class="breadcrumb-item active">List</li>
                         </ol>
                     </div>
@@ -49,7 +49,7 @@
                                         <tr>
                                             <!--                <td>類別ID</td>-->
                                             <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
-                                            <td>訂單單號</td>
+                                            <td>使用者id</td>
                                             <td><input type="text" id="menu_name" name="menu_name" class="form-control"
                                                        placeholder="category description"/></td>
                                             <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
@@ -61,24 +61,30 @@
                                 <div class="card-body">
                                     <table id="TableMenuList" class="table table-bordered table-striped">
                                         <thead>
+                                        <th>使用者id</th>
+                                        <th>使用者名稱</th>
+                                        <th>原來存量</th>
+                                        <th>增加/減少量</th>
+                                        <th>異動後存量</th>
+                                        <th>來源</th>
                                         <th>訂單號碼</th>
-                                        <th>訂單狀態</th>
-                                        <th>訂購人</th>
-                                        <th>訂購日期</th>
-                                        <th>訂購金額</th>
+                                        <th>產品編號</th>
                                         <th>配送地址</th>
-                                        <th>是否上鍊</th>
+                                        <th>物流單號</th>
                                         </thead>
                                         <tbody>
-                                        {% for order in orders %}
+                                        {% for inventory in inventories %}
                                             <tr>
-                                                <td>{{ order.order_id }}  </td>
-                                                <td>{{ order.state }}  </td>
-                                                <td>{{ order.billing_last_name }}{{ order.billing_first_name }}</td>
-                                                <td>{{ order.date_created }}  </td>
-                                                <td>{{ order.total }}  </td>
-                                                <td>{{ order.billing_state }}{{ order.billing_city }}{{ order.billing_address_1 }}  </td>
-                                                <td>已上鏈</td>
+                                                <td>{{ inventory.user_id }}  </td>
+                                                <td>{{ inventory.username }}  </td>
+                                                <td>{{ inventory.beging_inventory }}  </td>
+                                                <td>{{ inventory.ending_Inventory }}</td>
+                                                <td>{{ inventory.adj_amount }}  </td>
+                                                <td>{{ inventory.order_source }}  </td>
+                                                <td>{{ inventory.order_id }}  </td>
+                                                <td>{{ inventory.product_id }}  </td>
+                                                <td>{{ inventory.shipping_country }}{{ inventory.shipping_city }}{{ inventory.shipping_address_1 }}  </td>
+                                                <td>{{ inventory.shipment_number }}  </td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>

@@ -27,12 +27,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h2>修改菜單</h2>
+                        <h2>新增授權</h2>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Menu</a></li>
-                            <li class="breadcrumb-item active">Edit</li>
+                            <li class="breadcrumb-item"><a href="#">Authorize</a></li>
+                            <li class="breadcrumb-item active">Add</li>
                         </ol>
                     </div>
                 </div>
@@ -43,48 +43,30 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <form method="POST" action="{{url_for('menu_blueprint.menuedit', mid=menuinfo.id)}}">   <!-- "."表示執行相同的url -->
+                            <form method="POST" action="{{ url_for('roles.authorizeadd') }}">
+                                <!-- "."表示執行相同的url -->
                                 {#                                {% csrf_token %}#}
                                 <div class="card card-primary">
                                     <div class="card-header">
-                                        <h3 class="card-title">修改菜單訊息</h3>
+                                        <h3 class="card-title">新增菜單授權</h3>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        菜單階層：<select id="menu_type" name="menu_type">
-                                        <option value="0" {% if menuinfo.MenuType == 0 %} selected="selected" {% endif %}>未選擇</option>
-                                        <option value="1" {% if menuinfo.MenuType == 1 %} selected="selected" {% endif %}>一階</option>
-                                        <option value="2" {% if menuinfo.MenuType == 2 %} selected="selected" {% endif %}>二階</option>
-                                    </select>
-                                    </div>
-                                    <div class="form-group" id="mtop" {% if menuinfo.MenuType == 1 %} style="display: none;" {% else %} style="display:;" {% endif %}>
-                                        <label for="Menu_top">上層菜單</label>
-                                        <select class="form-control" id="menu_top" name="menu_top">
-                                            {% for menutop in menutops %}
-                                                <option value={{ menutop.id }} {% if menutop.id == menuinfo.ParentId %} selected="selected" {% endif %}>{{ menutop.MenuName }}</option>
+                                    <div class="form-group" id="menu">
+                                        <label for="menu">菜單</label>
+                                        <select class="form-control" id="menu" name="menu">
+                                            {% for menuinfo in menuinfos %}
+                                                <option value={{ menuinfo.id }}>{{ menuinfo.MenuName }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="form-group" id="mtarget" {% if menuinfo.MenuType == 2 %} style="display: none;" {% else %} style="display:;" {% endif %}>
-                                        <label for="menu_bp">blueprint</label>
-                                        <input type="text" class="form-control" id="menu_bp" name="menu_bp" value={{ menuinfo.MenuTarget }}
-                                               placeholder="Menu Blueprint">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="MenuName">菜單名稱</label>
-                                        <input type="text" class="form-control" id="menu_name" name="menu_name" value="{{ menuinfo.MenuName }}"
-                                               placeholder="Menu Name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="MenuUrl">連結</label>
-                                        <input type="text" class="form-control" id="menu_url" name="menu_url" value="{{ menuinfo.MenuUrl }}"
-                                               placeholder="Menu URL">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="MenuSort">順序</label>
-                                        <input type="text" class="form-control" id="menu_sort" name="menu_sort" value="{{ menuinfo.MenuSort }}"
-                                               placeholder="Menu Sort">
+                                    <div class="form-group" id="role">
+                                        <label for="role">角色</label>
+                                        <select class="form-control" id="role" name="role">
+                                            {% for role in roles %}
+                                                <option value={{ role.id }}>{{ role.role_name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="submit" name="button" id="button" value="送出"
@@ -149,8 +131,8 @@
             } else if ($('#menu_type').val() == 2) {
                 document.getElementById("mtop").style.display = ""
                 document.getElementById("mtarget").style.display = "none"
-            }else {
-                 document.getElementById("mtop").style.display = "none"
+            } else {
+                document.getElementById("mtop").style.display = "none"
                 document.getElementById("mtarget").style.display = ""
             }
         }

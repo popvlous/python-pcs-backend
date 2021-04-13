@@ -45,8 +45,8 @@ def getmenus(menu_id=None):
     #menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     # menus = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
     # menus1 = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
-    menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
-    #menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.menu_id == menu_id).all()
+    #menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
+    menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.menu_id == menu_id).all()
     menus_id = menus2[0].menu.ParentId
     return menus, menus1, menus_id
 
@@ -63,7 +63,8 @@ def menuindex():
 @login_required
 def menulist():
     menus, menus1, menus_id = getmenus(2)
-    return render_template('list.html', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1)
+    menuinfos = SysMenu.query.filter().all()
+    return render_template('list.html', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1, menuinfos=menuinfos)
 
 
 @blueprint.route('/menuadd', methods=['GET', 'POST'])
@@ -113,7 +114,7 @@ def menuadd():
 @login_required
 def menuedit():
     message = None
-    menus, menus1 = getmenus_no_id()
+    menus, menus1, menu_id = getmenus(3)
     menu_id = request.args.get('mid')
     menu_info = SysMenu.query.filter_by(id=menu_id).first()
     menu_parent_id = menu_info.ParentId

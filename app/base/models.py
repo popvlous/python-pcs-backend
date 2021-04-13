@@ -77,9 +77,25 @@ class Orders(db.Model):
     billing_last_name = db.Column(db.String(50), nullable=True)
     date_created = db.Column(db.DateTime, nullable=True)
     total = db.Column(db.Integer, nullable=True)
+    customer_id = db.Column(db.Integer)
     billing_state = db.Column(db.String(50), nullable=True)
     billing_city = db.Column(db.String(50), nullable=True)
     billing_address_1 = db.Column(db.String(500), nullable=True )
+    line_items_id = db.Column(db.Integer)
+    line_items_name = db.Column(db.String(100), nullable=True)
+    line_items_product_id = db.Column(db.Integer)
+    line_items_variation_id = db.Column(db.Integer)
+    line_items_quantity = db.Column(db.Integer)
+    line_items_tax_class = db.Column(db.String(100), nullable=True)
+    line_items_subtotal = db.Column(db.Numeric(10, 6))
+    line_items_subtotal_tax = db.Column(db.Numeric(10, 6))
+    line_items_total = db.Column(db.Numeric(10, 6))
+    line_items_total_tax = db.Column(db.Numeric(10, 6))
+    line_items_taxes = db.Column(db.String(100), nullable=True)
+    line_items_sku = db.Column(db.Integer)
+    line_items_price = db.Column(db.Numeric(10, 6))
+    line_items_parent_name = db.Column(db.String(100), nullable=True)
+
 
     def __init__(self, order_id, parent_id, state, billing_first_name, billing_last_name):
         self.order_id = order_id

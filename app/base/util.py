@@ -4,6 +4,18 @@ Copyright (c) 2019 - present AppSeed.us
 """
  
 import hashlib, binascii, os
+import json
+from flask import request
+import requests
+
+user_name = "pyrarc.app"
+user_passwd = "dOidZQSGR09BnHROt4ss#NT3"
+end_point_url_posts = "https://store.pyrarc.com/wp-json/jwt-auth/v1/token"
+
+payload = {
+    "username": user_name,
+    "password": user_passwd
+}
 
 # Inspiration -> https://www.vitoshacademy.com/hashing-passwords-in-python/
 
@@ -27,3 +39,16 @@ def verify_pass(provided_password, stored_password):
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_password
 
+def getCustomerNameById(customer_id):
+    r = requests.post(end_point_url_posts, data=payload)
+    jwt_info = r.content.decode("utf-8").replace("'", '"')
+    data = json.loads(jwt_info)
+    s = json.dumps(data, indent=4, sort_keys=True)
+    print(s)
+    token = data['token']
+    Auth_token = "Bearer " + token
+    my_headers = {'Authorization': Auth_token}
+    response_customers = requests.get('https://store.pyrarc.com/wp-json/wc/v3/customers/'+ str(customer_id), data=payload,
+                                      headers=my_headers)
+    customerlist = json.loads(response_customers.content.decode("utf-8").replace("'", '"'))
+    return customerlist

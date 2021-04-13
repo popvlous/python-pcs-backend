@@ -68,12 +68,12 @@
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
-                                        {% for menu in menus %}
+                                        {% for menu in menuinfos %}
                                             <tr>
-                                                <td>{{ menu.menu.id }}  </td>
-                                                <td>{{ menu.menu.MenuName }}  </td>
-                                                <td>{{ menu.menu.MenuUrl }}  </td>
-                                                <td>{{ menu.menu.MenuType }}  </td>
+                                                <td>{{ menu.id }}  </td>
+                                                <td>{{ menu.MenuName }}  </td>
+                                                <td>{{ menu.MenuUrl }}  </td>
+                                                <td>{{ menu.MenuType }}  </td>
                                                 <td>
                                                     <a href="{{url_for('menu_blueprint.menuedit', mid=menu.id)}}" class="btn btn-primary btn-xs"
                                                        title="編輯">編輯 </a>

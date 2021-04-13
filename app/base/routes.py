@@ -138,7 +138,7 @@ def add():
         db.session.commit()
         newusers = User.query.filter().all()
         return render_template('accounts/list.html', users=newusers, segment='list', menus=menus, menus1=menus1)
-    return render_template( 'accounts/add1.html', users=users, menu_id=int(menus_id), segment='list', menus=menus, menus1=menus1)
+    return render_template( 'accounts/add1.html', users=users, menu_id=int(menus_id), segment='add', menus=menus, menus1=menus1)
 
 @blueprint.route('/edit',methods=['GET', 'POST'])
 @login_required
