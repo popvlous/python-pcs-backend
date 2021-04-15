@@ -17,8 +17,9 @@ from app.menu.routes import getmenus
 def index():
     #menus = SysMenu.query.filter().all()
     #menus1 = SysMenu.query.filter().all()
-    menus, menus1, menus_id = getmenus(3)
-    return render_template('index.html', segment='index.html', menus=menus, menus1=menus1)
+    menus, menus1, menus_id = getmenus(12)
+    orders = Orders.query.filter().all()
+    return render_template('/orders/list.html', menu_id=int(menus_id), segment='orderlist', menus=menus, menus1=menus1, orders=orders)
 
 @blueprint.route('/<template>')
 @login_required
