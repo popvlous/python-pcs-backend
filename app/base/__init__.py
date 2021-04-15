@@ -10,6 +10,6 @@ blueprint = Blueprint(
     __name__,
     url_prefix='/backend',
     template_folder='templates',
-    static_folder='static'
+    static_folder='backend/static'
 )
 
