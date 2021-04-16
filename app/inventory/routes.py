@@ -76,9 +76,10 @@ def inventorynotify():
     menus, menus1, menus_id = getmenus(31)
     inventory_id = request.args.get('mid')
     inventory = Inventory.query.filter_by(id=inventory_id).all()
+    inventories = Inventory.query.filter().all()
     token = 'M5g5yVHMV2gc6iRvs1xu5Bsb9OEj0Wux8pQcKknldMo'
     msg = '請登入平台，輸入物流單號 https://storeapi.pyrarc.com/backend/inventorylist?mid=' + str(inventory_id)
     lineNotifyMessage(token, msg)
     return render_template('/inventories/list.html', menu_id=int(menus_id), segment='inventorylist', menus=menus,
                            menus1=menus1,
-                           inventories=inventory)
+                           inventories=inventories)
