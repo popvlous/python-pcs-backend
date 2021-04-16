@@ -45,6 +45,7 @@ def authorizeadd():
             roleuser = RolesMenus(menu_id, role_id)
             db.session.add(roleuser)
             db.session.commit()
+            message = '已添加'
         else:
             message = '已存在對應授權'
         return render_template('/roles/authorizeadd.html', menu_id=int(menus_id), segment='authorizeadd', menus=menus,
