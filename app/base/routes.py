@@ -3,7 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-from flask import jsonify, render_template, redirect, request, url_for
+from flask import jsonify, render_template, redirect, request, url_for, flash
 from flask_login import (
     current_user,
     login_required,
@@ -33,6 +33,17 @@ def route_default():
 
 ## Login & Registration
 
+
+def redirect_dest(fallback):
+    dest = request.args.get('next')
+    dest_args = request.args.get('mid')
+    try:
+        dest_url = url_for(dest, mid=dest_args)
+    except:
+        return redirect(fallback)
+    return redirect(dest_url)
+
+
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
@@ -53,7 +64,9 @@ def login():
         if user and verify_pass( password, user.password):
 
             login_user(user)
-            return redirect(url_for('base_blueprint.route_default'))
+            return redirect_dest(fallback=url_for('base_blueprint.route_default'))
+            #return url_for(url_for('base_blueprint.route_default'))
+
 
         # Something (user or pass) is not ok
         return render_template( 'accounts/login.html', msg='Wrong user or password', form=login_form)
@@ -180,7 +193,11 @@ def delete():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return render_template('page-403.html'), 403
+    flash("You have to be logged in to access this page.")
+    next = url_for(request.endpoint, **request.args)
+    #return redirect(url_for('base_blueprint.login', next=next))
+    return redirect(url_for('base_blueprint.login', next=request.endpoint, **request.args))
+    #return render_template('page-403.html'), 403
 
 @blueprint.errorhandler(403)
 def access_forbidden(error):
