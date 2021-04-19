@@ -16,7 +16,7 @@ class Inventory(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
     beging_inventory = db.Column(db.Integer)
-    ending_Inventory = db.Column(db.Integer)
+    ending_inventory = db.Column(db.Integer)
     adj_amount = db.Column(db.String(50))
     create_time = db.Column(db.DateTime, index=True, default=datetime.now)
     modify_time = db.Column(db.DateTime, index=True, default=datetime.now)
@@ -38,11 +38,11 @@ class Inventory(db.Model, UserMixin):
     shipment_number = db.Column(db.String(50), nullable=True)
     remark = db.Column(db.String(50))
 
-    def __init__(self, user_id, beging_inventory, ending_Inventory, adj_amount, order_id, product_id, create_by,
+    def __init__(self, user_id, beging_inventory, ending_inventory, adj_amount, order_id, product_id, create_by,
                  order_source):
         self.user_id = user_id
         self.beging_inventory = beging_inventory
-        self.ending_Inventory = ending_Inventory
+        self.ending_inventory = ending_inventory
         self.adj_amount = adj_amount
         self.order_id = order_id
         self.product_id = product_id
