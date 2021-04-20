@@ -5,6 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_login import UserMixin
 from sqlalchemy import LargeBinary, Column, Integer, String
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import relationship, backref
 
 from app import db, login_manager
@@ -58,7 +59,11 @@ class User(db.Model, UserMixin):
 
 @login_manager.user_loader
 def user_loader(id):
-    return User.query.filter_by(id=id).first()
+    try:
+        user = User.query.filter_by(id=id).first()
+    except InvalidRequestError:
+        db.session.rollback()
+    return user
 
 @login_manager.request_loader
 def request_loader(request):
