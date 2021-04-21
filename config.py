@@ -25,6 +25,12 @@ class Config(object):
         config( 'DB_PORT'     , default=3309            ),
         config( 'DB_NAME'     , default='pcs' )
     )
+
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ProductionConfig(Config):
@@ -44,6 +50,11 @@ class ProductionConfig(Config):
         config( 'DB_PORT'     , default=3306            ),
         config( 'DB_NAME'     , default='pcs' )
     )
+
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
 
 class DebugConfig(Config):
     DEBUG = True
