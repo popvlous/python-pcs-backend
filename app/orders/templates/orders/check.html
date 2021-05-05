@@ -27,7 +27,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>顯示訂單資料表所有資料</h1>
+                        <h1>顯示該訂單所有上鏈資料</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -47,18 +47,12 @@
                                 <div class="card-header">
                                     <table class="table table-bordered table-striped">
                                         <tr>
-                                            <!--                <td>類別ID</td>-->
-                                            <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
-                                            <td>訂單單號</td>
-                                            <td><input type="text" id="menu_name" name="menu_name" class="form-control"
-                                                       placeholder="category description"/></td>
-                                            <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
-                                                                   class="btn btn-primary btn-xs">
-                                            </td>
+                                            <td colspan="2">驗證狀態<button style="font-size:24px;color:green">{% if checkinfo.isblockchain  == True %}<i class="fa fa-check-square"> Sucess {% else %}<i class="fa fa-square-o"> Failed {% endif %}</i></button></td>
                                         </tr>
                                     </table>
                                 </div>
                                 <div class="card-body">
+                                    <label>該筆訂單上鏈歷程</label>
                                     <table id="TableMenuList" class="table table-bordered table-striped">
                                         <thead>
                                         <th>訂單號碼</th>
@@ -67,23 +61,16 @@
                                         <th>訂購日期</th>
                                         <th>訂購金額</th>
                                         <th>配送地址</th>
-                                        <th>操作</th>
                                         </thead>
                                         <tbody>
-                                        {% for order in orders %}
+                                        {% for historylist in historylists %}
                                             <tr>
-                                                <td>{{ order.order_id }}  </td>
-                                                <td>{{ order.state }}  </td>
-                                                <td>{{ order.billing_last_name }}{{ order.billing_first_name }}</td>
-                                                <td>{{ order.date_created }}  </td>
-                                                <td>{{ order.total }}  </td>
-                                                <td>{{ order.billing_state }}{{ order.billing_city }}{{ order.billing_address_1 }}  </td>
-                                                <td>
-                                                    <a href="{{url_for('orders.ordercheck', mid=order.order_id)}}" class="btn btn-primary btn-xs"
-                                                       title="區塊鏈檢驗">區塊鏈檢驗 </a>
-                                                </td>
-{#                                                <td><button style="font-size:24px;color:green">{% if order.checkinfo  == True %}<i class="fa fa-check-square"> Sucess {% else %}<i class="fa fa-square-o"> Failed {% endif %}</i></button></td>#}
-
+                                                <td>{{ historylist.order_id }}  </td>
+                                                <td>{{ historylist.state }}  </td>
+                                                <td>{{ historylist.billing_last_name }}{{ historylist.billing_first_name }}</td>
+                                                <td>{{ historylist.date_created }}  </td>
+                                                <td>{{ historylist.total }}  </td>
+                                                <td>{{ historylist.billing_state }}{{ historylist.billing_city }}{{ historylist.billing_address_1 }}  </td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>

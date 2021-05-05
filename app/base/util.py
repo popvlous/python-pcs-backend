@@ -17,6 +17,14 @@ payload = {
     "password": user_passwd
 }
 
+
+#區塊鏈基礎訊息
+token = "SEY3QW9ES2ZBbw=="
+headers = {
+    "Authorization": "Bearer " + token,
+    "Content-Type": "application/json"
+}
+
 # Inspiration -> https://www.vitoshacademy.com/hashing-passwords-in-python/
 
 def hash_pass( password ):
@@ -52,3 +60,14 @@ def getCustomerNameById(customer_id):
                                       headers=my_headers)
     customerlist = json.loads(response_customers.content.decode("utf-8").replace("'", '"'))
     return customerlist
+
+
+def queryBlockChainOrder(order_id):
+    end_point_url_posts = "https://ccapi.stag.nexuera.com/orders/query/" + str(order_id)
+    r = requests.post(end_point_url_posts, headers=headers, verify=False)
+    return r.content
+
+def historyBlockChainOrder(order_id):
+    end_point_url_posts = "https://ccapi.stag.nexuera.com/orders/history/" + str(order_id)
+    r = requests.post(end_point_url_posts, headers=headers, verify=False)
+    return r.content
