@@ -47,7 +47,7 @@
                                 <div class="card-header">
                                     <table class="table table-bordered table-striped">
                                         <tr>
-                                            <td colspan="2">驗證狀態<button style="font-size:24px;color:green">{% if checkinfo.isblockchain  == True %}<i class="fa fa-check-square"> Sucess {% else %}<i class="fa fa-square-o"> Failed {% endif %}</i></button></td>
+                                            <td colspan="2">驗證狀態 {% if checkinfo.isblockchain  == True %}<button style="font-size:24px;color:green"><i class="fa fa-check-square"> Sucess {% else %}<button style="font-size:24px;color:red"><i class="fa fa-square"> Failed {% endif %}</i></button></td>
                                         </tr>
                                     </table>
                                 </div>

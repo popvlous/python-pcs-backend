@@ -30,6 +30,8 @@ def orderlist():
 def ordercheck():
     menus, menus1, menus_id = getmenus(12)
     orders = Orders.query.filter().all()
+    check_info_json = None
+    historylists = []
     message = None
     order_id = request.args.get('mid')
     check_info = queryBlockChainOrder(order_id)
