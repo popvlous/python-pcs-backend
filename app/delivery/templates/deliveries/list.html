@@ -69,6 +69,7 @@
                                         <th>配送郵遞區號</th>
                                         <th>配送國家</th>
                                         <th>配送電話</th>
+                                        <th>創建時間</th>
                                         <th>物流單號</th>
                                         </thead>
                                         <tbody>
@@ -82,6 +83,7 @@
                                                 <td>{{ delivery.shipping_postcode }}  </td>
                                                 <td>{{ delivery.shipping_country }}  </td>
                                                 <td>{{ delivery.shipping_phone }}  </td>
+                                                <td>{{ delivery.create_time }}  </td>
                                                 <td>{{ delivery.shipment_number}}  </td>
                                             </tr>
                                         {% endfor %}
@@ -123,7 +125,8 @@
                 "searching": true,    <!-- 允许内容搜索 -->
                 "ordering": true,     <!-- 允许排序 -->
                 "info": true,         <!-- 显示信息 -->
-                "autoWidth": false    <!-- 固定宽度 -->
+                "autoWidth": false,    <!-- 固定宽度 -->
+                "order": [[ 8, "desc" ]]
             });
         })
     </script>
