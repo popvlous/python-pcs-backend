@@ -33,7 +33,7 @@ def route_default():
 
 ## Login & Registration
 
-
+#登入後重導向 帶入下一個頁面跟參數
 def redirect_dest(fallback):
     dest = request.args.get('next')
     dest_args = request.args.get('mid')
@@ -191,6 +191,7 @@ def delete():
 
 ## Errors
 
+#尚未登入連結網誌錯誤，
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     flash("You have to be logged in to access this page.")
