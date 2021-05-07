@@ -85,7 +85,7 @@
                                                 <td>{{ inventory.order_id }}  </td>
                                                 <td>{{ inventory.product_id }}  </td>
                                                 <td>{{ inventory.shipping_country }}{{ inventory.shipping_city }}{{ inventory.shipping_address_1 }}  </td>
-                                                <td>{{ inventory.create_time }}  </td>
+                                                <td>{{ moment(inventory.create_time).format('lll') }}  </td>
                                                 <td>
                                                     <a href="{{url_for('inventory.inventoryadddo', mid=inventory.id)}}" class="btn btn-primary btn-xs"
                                                        title="添加物流單號">添加物流單號 </a>

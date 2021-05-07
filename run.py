@@ -9,6 +9,8 @@ from sys import exit
 from decouple import config
 import logging
 
+from flask_moment import Moment
+
 from config import config_dict
 from app import create_app, db
 
@@ -26,7 +28,8 @@ try:
 except KeyError:
     exit('Error: Invalid <config_mode>. Expected values [Debug, Production] ')
 
-app = create_app( app_config ) 
+app = create_app( app_config )
+moment = Moment(app)
 Migrate(app, db)
 
 if DEBUG:

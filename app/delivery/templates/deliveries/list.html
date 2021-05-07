@@ -83,7 +83,7 @@
                                                 <td>{{ delivery.shipping_postcode }}  </td>
                                                 <td>{{ delivery.shipping_country }}  </td>
                                                 <td>{{ delivery.shipping_phone }}  </td>
-                                                <td>{{ delivery.create_time }}  </td>
+                                                <td>{{ moment(delivery.create_time).format('lll') }}  </td>
                                                 <td>{{ delivery.shipment_number}}  </td>
                                             </tr>
                                         {% endfor %}

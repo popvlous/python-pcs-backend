@@ -75,7 +75,7 @@
                                                 <td>{{ order.order_id }}  </td>
                                                 <td>{{ order.state }}  </td>
                                                 <td>{{ order.billing_last_name }}{{ order.billing_first_name }}</td>
-                                                <td>{{ order.date_created }}  </td>
+                                                <td>{{ moment(order.date_created).format('lll') }}  </td>
                                                 <td>{{ order.total }}  </td>
                                                 <td>{{ order.billing_state }}{{ order.billing_city }}{{ order.billing_address_1 }}  </td>
                                                 <td>
