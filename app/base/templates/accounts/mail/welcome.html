@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>WelCome {{ user.username }}, please activate your account</h1>
+<h2>Please activate your account, just press the hyperlink within a day.</h2>
+hyperlink=>{{ url_for('base_blueprint.user_confirm', token=token, _external=True) }}
+</body>
+</html>

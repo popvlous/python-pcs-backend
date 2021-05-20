@@ -14,7 +14,9 @@ from flask_login import (
 from app import db, login_manager
 from app.base import blueprint
 from app.base.forms import LoginForm, CreateAccountForm
-from app.base.models import User, Orders, SysMenu
+from app.base.models import User, Orders, SysMenu, request_loader
+from app.model.roles import RolesMenus, Role, RolesUsers
+from app.base.sendmail import send_mail
 
 from app.base.util import verify_pass, hash_pass
 from app.menu.routes import getmenus_no_id, getmenus
@@ -80,9 +82,12 @@ def login():
         menus, menus1, = getmenus_no_id()
     return redirect(url_for('home_blueprint.index', menus=menus, menus1=menus1))
 
+
+
+
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    login_form = LoginForm(request.form)
+
     create_account_form = CreateAccountForm(request.form)
     if 'register' in request.form:
 
@@ -106,17 +111,57 @@ def register():
                                     form=create_account_form)
 
         # else we can create the user
+
         user = User(**request.form)
+        user.confirm = 0
         db.session.add(user)
         db.session.commit()
 
+        #增加user跟角色的關係,預設一般用戶為6
+        role_info = RolesUsers(user.id, 6)
+        db.session.add(role_info)
+        db.session.commit()
+
+        #新增帳號啟動信
+        token = user.create_confirm_token()
+        User.query.filter_by(id=user.id).update(dict(WebToken=token))
+        db.session.commit()
+        recipients_mail = []
+        recipients_mail.append(email)
+        send_mail(sender='popvlous007@gmail.com',
+                  recipients=recipients_mail,
+                  subject='Activate your account',
+                  template='accounts/mail/welcome',
+                  mailtype='html',
+                  user=user,
+                  token=token)
+
         return render_template( 'accounts/register.html', 
-                                msg='User created please <a href="/login">login</a>', 
+                                msg='User created please <a href="/backend/login">login</a>',
                                 success=True,
                                 form=create_account_form)
 
     else:
         return render_template( 'accounts/register.html', form=create_account_form)
+
+@blueprint.route('/user_confirm/<token>')
+def user_confirm(token):
+    login_form = LoginForm(request.form)
+    if not token:
+        return render_template( 'accounts/login.html', msg='token無效', form=login_form)
+    user = User.query.filter_by(WebToken=token).first()
+    if not user:
+        return render_template('accounts/login.html', form=login_form, msg='user無效')
+    data = user.validate_confirm_token(token)
+    if data:
+        user = User.query.filter_by(id=data.get('user_id')).first()
+        user.confirm = True
+        db.session.add(user)
+        db.session.commit()
+        flash("激活成功 請重新登入")
+        return redirect(url_for('base_blueprint.login'))
+    else:
+        return render_template( 'accounts/login.html', msg='已失效 請重新註冊', form='')
 
 @blueprint.route('/logout')
 def logout():
@@ -188,6 +233,25 @@ def delete():
             message = "讀取錯誤!"
     usersinfo = User.query.filter().all()
     return render_template( 'accounts/list.html', segment='list', menus=menus, menus1=menus1, users=usersinfo)
+
+
+@blueprint.before_request
+def before_request():
+    """
+    在使用者登入之後，需做一個帳號是否啟動的驗證，啟動之後才能向下展開相關的應用。
+    條件一：需登入
+    條件二：未啟動
+    條件三：endpoint不等於static，這是避免靜態資源的取用異常，如icon、js、css等..
+    :return:
+    """
+    if (current_user.is_authenticated and
+            not current_user.confirm and
+            request.endpoint != 'static'):
+        #  條件滿足就引導至未啟動說明
+        msg = '請激活該帳號'
+        login_form = LoginForm(request.form)
+        return render_template('accounts/login.html', form=login_form, msg=msg)
+
 
 ## Errors
 

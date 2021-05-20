@@ -19,10 +19,10 @@ class Config(object):
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
     SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}?autocommit=true'.format(
         config( 'DB_ENGINE'   , default='mysql'    ),
-        config( 'DB_USERNAME' , default='pcs'       ),
-        config( 'DB_PASS'     , default='Foxconn@890'          ),
-        config( 'DB_HOST'     , default='192.168.100.14'     ),
-        config( 'DB_PORT'     , default=3309            ),
+        config( 'DB_USERNAME' , default='root'       ),
+        config( 'DB_PASS'     , default='root'          ),
+        config( 'DB_HOST'     , default='127.0.0.1'     ),
+        config( 'DB_PORT'     , default=3306            ),
         config( 'DB_NAME'     , default='pcs' )
     )
 
@@ -32,6 +32,15 @@ class Config(object):
     }
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com'
+    MAIL_PORT=465
+    MAIL_USE_SSL=True
+    MAIL_DEFAULT_SENDER=('admin', 'popvlous007@gmail.com')
+    MAIL_MAX_EMAILS=10
+    MAIL_USERNAME='popvlous007@gmail.com'
+    MAIL_PASSWORD='Foxconn@99'
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -48,13 +57,22 @@ class ProductionConfig(Config):
         config( 'DB_PASS'     , default='dev2021api0322'          ),
         config( 'DB_HOST'     , default='192.168.110.18'     ),
         config( 'DB_PORT'     , default=3306            ),
-        config( 'DB_NAME'     , default='pcs' )
+        config( 'DB_NAME'     , default=    'pcs' )
     )
 
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
     }
+
+    # EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com'
+    MAIL_PORT=465
+    MAIL_USE_SSL=True
+    MAIL_DEFAULT_SENDER=('admin', 'popvlous007@gmail.com')
+    MAIL_MAX_EMAILS=10
+    MAIL_USERNAME='popvlous007@gmail.com'
+    MAIL_PASSWORD='Foxconn@99'
 
 class DebugConfig(Config):
     DEBUG = True

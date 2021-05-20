@@ -2,7 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+from flask_mail import Mail
 from flask_migrate import Migrate
 from os import environ
 from sys import exit
@@ -30,6 +30,7 @@ except KeyError:
 
 app = create_app( app_config )
 moment = Moment(app)
+mail = Mail(app)
 Migrate(app, db)
 
 if DEBUG:
