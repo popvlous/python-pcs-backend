@@ -124,6 +124,7 @@ def register():
 
         #新增帳號啟動信
         token = user.create_confirm_token()
+        re_token = token.decode("utf-8").replace("'", '"')
         User.query.filter_by(id=user.id).update(dict(WebToken=token))
         db.session.commit()
         recipients_mail = []
@@ -134,7 +135,7 @@ def register():
                   template='accounts/mail/welcome',
                   mailtype='html',
                   user=user,
-                  token=token)
+                  token=re_token)
 
         return render_template( 'accounts/register.html', 
                                 msg='User created please <a href="/backend/login">login</a>',
@@ -161,7 +162,7 @@ def user_confirm(token):
         flash("激活成功 請重新登入")
         return redirect(url_for('base_blueprint.login'))
     else:
-        return render_template( 'accounts/login.html', msg='已失效 請重新註冊', form='')
+        return render_template( 'accounts/login.html', msg='已失效 請重新註冊', form=login_form)
 
 @blueprint.route('/logout')
 def logout():

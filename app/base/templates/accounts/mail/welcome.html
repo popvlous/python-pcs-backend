@@ -7,6 +7,7 @@
 <body>
 <h1>WelCome {{ user.username }}, please activate your account</h1>
 <h2>Please activate your account, just press the hyperlink within a day.</h2>
-hyperlink=>{{ url_for('base_blueprint.user_confirm', token=token, _external=True) }}
+{#hyperlink=>{{ url_for('base_blueprint.user_confirm', token=token, _external=True) }}#}
+<a href="https://storeapi.pyrarc.com/backend/user_confirm/{{ token }}">激活帳號</a>
 </body>
 </html>
