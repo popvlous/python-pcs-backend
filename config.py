@@ -40,7 +40,7 @@ class Config(object):
     MAIL_DEFAULT_SENDER=('admin', 'popvlous007@gmail.com')
     MAIL_MAX_EMAILS=10
     MAIL_USERNAME='popvlous007@gmail.com'
-    MAIL_PASSWORD='Foxconn@99'
+    MAIL_PASSWORD='Foxconn@890'
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -72,7 +72,7 @@ class ProductionConfig(Config):
     MAIL_DEFAULT_SENDER=('admin', 'popvlous007@gmail.com')
     MAIL_MAX_EMAILS=10
     MAIL_USERNAME='popvlous007@gmail.com'
-    MAIL_PASSWORD='Foxconn@99'
+    MAIL_PASSWORD='Foxconn@890'
 
 class DebugConfig(Config):
     DEBUG = True
