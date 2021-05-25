@@ -67,6 +67,7 @@
                                         <th>訂購日期</th>
                                         <th>訂購金額</th>
                                         <th>配送地址</th>
+                                        <th>區塊鏈tx</th>
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
@@ -78,6 +79,7 @@
                                                 <td>{{ moment(order.date_created).format('lll') }}  </td>
                                                 <td>{{ order.total }}  </td>
                                                 <td>{{ order.billing_state }}{{ order.billing_city }}{{ order.billing_address_1 }}  </td>
+                                                <td>{{ order.tx_id }} </td>
                                                 <td>
                                                     <a href="{{url_for('orders.ordercheck', mid=order.order_id)}}" class="btn btn-primary btn-xs"
                                                        title="區塊鏈檢驗">區塊鏈檢驗 </a>
@@ -124,7 +126,7 @@
                 "searching": true,    <!-- 允许内容搜索 -->
                 "ordering": true,     <!-- 允许排序 -->
                 "info": true,         <!-- 显示信息 -->
-                "autoWidth": false,    <!-- 固定宽度 -->
+                "autoWidth": true,    <!-- 固定宽度 -->
                 "order": [[ 3, "desc" ]]
             });
         })
