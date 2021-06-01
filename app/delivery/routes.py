@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import render_template, request
+from sqlalchemy import desc
 
 from app import db
 from app.base.models import User, Orders, SysMenu
@@ -18,9 +19,9 @@ def deliverylist():
     menus, menus1, menus_id = getmenus(34)
     delivery_id = request.args.get('mid')
     if delivery_id:
-        deliveries = Delivery.query.filter_by(id=delivery_id).all()
+        deliveries = Delivery.query.filter_by(id=delivery_id).order_by(desc(Delivery.id)).all()
     else:
-        deliveries = Delivery.query.filter().all()
+        deliveries = Delivery.query.filter().order_by(desc(Delivery.id)).all()
     now = datetime.utcnow()
     return render_template('/deliveries/list.html', menu_id=int(menus_id), segment='deliverylist', menus=menus, menus1=menus1, deliveries=deliveries, now=now)
 

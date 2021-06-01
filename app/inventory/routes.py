@@ -1,5 +1,6 @@
 import requests
 from flask import render_template, request
+from sqlalchemy import desc
 
 from app import db
 from app.base.models import User, Orders, SysMenu
@@ -30,9 +31,9 @@ def inventorylist():
     menus, menus1, menus_id = getmenus(31)
     inventory_id = request.args.get('mid')
     if inventory_id:
-        inventories = Inventory.query.filter_by(id=inventory_id).all()
+        inventories = Inventory.query.filter_by(id=inventory_id).order_by(desc(Inventory.id)).all()
     else:
-        inventories = Inventory.query.filter().all()
+        inventories = Inventory.query.filter().order_by(desc(Inventory.id)).all()
     for invertory in inventories:
         order_info = Orders.query.filter_by(customer_id=invertory.user_id).limit(1).all()
         if order_info:
