@@ -61,6 +61,7 @@
                                 <div class="card-body">
                                     <table id="TableMenuList" class="table table-bordered table-striped">
                                         <thead>
+                                        <th>id</th>
                                         <th>使用者id</th>
                                         <th>使用者名稱</th>
                                         <th>原來存量</th>
@@ -77,6 +78,7 @@
                                         <tbody>
                                         {% for inventory in inventories %}
                                             <tr>
+                                                <td>{{ inventory.id }}  </td>
                                                 <td>{{ inventory.user_id }}  </td>
                                                 <td>{{ inventory.username }}  </td>
                                                 <td>{{ inventory.beging_inventory }}  </td>
@@ -135,6 +137,14 @@
                 "ordering": true,     <!-- 允许排序 -->
                 "info": true,         <!-- 显示信息 -->
                 "autoWidth": false,    <!-- 固定宽度 -->
+                "order": [[ 0, "desc" ]],
+                "columnDefs": [
+                  {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                  }
+                ]
             });
         })
     </script>
