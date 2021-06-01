@@ -37,6 +37,7 @@ class Inventory(db.Model, UserMixin):
     shipping_phone = db.Column(db.String(50), nullable=True)
     shipment_number = db.Column(db.String(50), nullable=True)
     remark = db.Column(db.String(50))
+    tx_id = db.Column(db.String(100), nullable=True)
 
     def __init__(self, user_id, beging_inventory, ending_inventory, adj_amount, order_id, product_id, create_by,
                  order_source):

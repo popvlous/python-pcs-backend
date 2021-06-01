@@ -72,6 +72,7 @@
                                         <th>配送電話</th>
                                         <th>創建時間</th>
                                         <th>物流單號</th>
+                                        <th>區塊鏈tx</th>
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
@@ -88,6 +89,7 @@
                                                 <td>{{ delivery.shipping_phone }}  </td>
                                                 <td>{{ moment(delivery.create_time).format('lll') }}  </td>
                                                 <td>{{ delivery.shipment_number}}  </td>
+                                                <td><div style="width:100%;white-space:normal;word-wrap:break-word;word-break:break-all;">{{ delivery.tx_id}}</div></td>
                                                 <td>
                                                     <a href="{{url_for('delivery.deliveryadddo', mid=delivery.id)}}" class="btn btn-primary btn-xs"
                                                        title="添加物流單號">添加物流單號 </a>
@@ -135,7 +137,7 @@
                 "ordering": true,     <!-- 允许排序 -->
                 "info": true,         <!-- 显示信息 -->
                 "autoWidth": false,    <!-- 固定宽度 -->
-                "order": [[ 8, "desc" ]]
+                "order": [[ 10, "desc" ]]
             });
         })
     </script>

@@ -71,6 +71,7 @@
                                         <th>產品編號</th>
                                         <th>配送地址</th>
                                         <th>創建時間</th>
+                                        <th>區塊鏈tx</th>
                                         <th>操作</th>
                                         </thead>
                                         <tbody>
@@ -86,9 +87,10 @@
                                                 <td>{{ inventory.product_id }}  </td>
                                                 <td>{{ inventory.shipping_country }}{{ inventory.shipping_city }}{{ inventory.shipping_address_1 }}  </td>
                                                 <td>{{ moment(inventory.create_time).format('lll') }}  </td>
+                                                <td><div style="width:100%;white-space:normal;word-wrap:break-word;word-break:break-all;">{{ inventory.tx_id }}</div></td>
                                                 <td>
-                                                    <a href="{{url_for('inventory.inventoryadddo', mid=inventory.id)}}" class="btn btn-primary btn-xs"
-                                                       title="添加物流單號">添加物流單號 </a>
+                                                    {#<a href="{{url_for('inventory.inventoryadddo', mid=inventory.id)}}" class="btn btn-primary btn-xs"
+                                                       title="添加物流單號">添加物流單號 </a>#}
                                                     <a href="{{url_for('inventory.inventorynotify', mid=inventory.id)}}" class="btn btn-primary btn-xs"
                                                        title="line通知">line通知 </a>
                                                 </td>

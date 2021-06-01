@@ -79,7 +79,7 @@
                                                 <td>{{ moment(order.date_created).format('lll') }}  </td>
                                                 <td>{{ order.total }}  </td>
                                                 <td>{{ order.billing_state }}{{ order.billing_city }}{{ order.billing_address_1 }}  </td>
-                                                <td>{{ order.tx_id }} </td>
+                                                <td><div style="width:100%;white-space:normal;word-wrap:break-word;word-break:break-all;">{{ order.tx_id }} </div></td>
                                                 <td>
                                                     <a href="{{url_for('orders.ordercheck', mid=order.order_id)}}" class="btn btn-primary btn-xs"
                                                        title="區塊鏈檢驗">區塊鏈檢驗 </a>
