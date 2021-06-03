@@ -145,7 +145,7 @@ def payment_info():
         'MerchantTradeDate': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
         'PaymentType': 'aio',
         'TotalAmount': int(order_details_total),
-        'TradeDesc': 'PyrarcOrderTest',
+        'TradeDesc': 'PyrarcTest',
         'ItemName': total_product_name,
         'ReturnURL': 'https://storeapi.pyrarc.com/backend/ecpay/receive',
         'ChoosePayment': 'ALL',
