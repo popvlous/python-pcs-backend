@@ -10,7 +10,7 @@ import requests
 from datetime import datetime
 
 user_name = "pyrarc.app"
-user_passwd = "dOidZQSGR09BnHROt4ss#NT3"
+user_passwd = "B8I%7s2MnQ1&nTM9OYP15ms0"
 end_point_url_posts = "https://store.pyrarc.com/wp-json/jwt-auth/v1/token"
 
 payload = {
