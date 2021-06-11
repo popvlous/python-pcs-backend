@@ -5,7 +5,7 @@ from datetime import datetime
 from urllib.parse import quote_plus
 
 import requests
-from flask import render_template, request, jsonify, Response
+from flask import render_template, request, jsonify, Response, redirect, url_for
 from sqlalchemy import desc
 
 from flask_login import login_required, current_user
@@ -139,6 +139,8 @@ def payment_info():
     # 取得環境參數
     params = Params.get_params()
 
+    host_url = 'https://storeapi.pyrarc.com'
+
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
         'StoreID': '',
@@ -147,13 +149,13 @@ def payment_info():
         'TotalAmount': int(order_details_total),
         'TradeDesc': 'PyrarcTest',
         'ItemName': total_product_name,
-        'ReturnURL': 'https://storeapi.pyrarc.com/backend/ecpay/receive',
+        'ReturnURL': host_url+'/backend/ecpay/receive',
         'ChoosePayment': 'ALL',
         'ClientBackURL': 'https://store.pyrarc.com',
         'ItemURL': 'https://www.ecpay.com.tw/item_url.php',
         'Remark': '交易備註',
         'ChooseSubPayment': '',
-        'OrderResultURL': 'https://storeapi.pyrarc.com/backend/ecpay/result',
+        'OrderResultURL': host_url+'/backend/ecpay/result',
         'NeedExtraPaidInfo': 'Y',
         'DeviceSource': '',
         'IgnorePayment': '',
@@ -260,7 +262,7 @@ def payment_receive():
 @blueprint.route('/ecpay/result', methods=['GET', 'POST'])
 def payment_end():
     if request.method == 'GET':
-        return render_template('ecpay/sucess.html')
+        return render_template('ecpay/success.html')
 
     if request.method == 'POST':
         check_mac_value = Params.get_mac_value(request.form)
@@ -323,9 +325,14 @@ def payment_end():
             }
             r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                                    headers=my_headers)
-            return render_template('ecpay/sucess.html')
+            #return render_template('ecpay/success.html')
+            return redirect(url_for('ecpay.payment_success', result='success'))
 
         # 判斷失敗
         else:
 
             return render_template('ecpay/fail.html')
+
+@blueprint.route('/ecpay/result', methods=['GET', 'POST'])
+def payment_success():
+    return render_template('ecpay/success.html')
