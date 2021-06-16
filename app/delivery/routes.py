@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from sqlalchemy import desc
 
 from app import db
@@ -53,12 +53,12 @@ def deliveryadddo():
 @login_required
 def deliverynotify():
     message = None
-    menus, menus1, menus_id = getmenus(31)
+    menus, menus1, menus_id = getmenus(34)
     delivery_id = request.args.get('mid')
     deliverires = Delivery.query.filter().all()
     token = 'M5g5yVHMV2gc6iRvs1xu5Bsb9OEj0Wux8pQcKknldMo'
     msg = '請登入平台，輸入物流單號 https://storeapi.pyrarc.com/backend/deliverylist?mid=' + str(delivery_id)
     lineNotifyMessage(token, msg)
-    return render_template('/deliveries/list.html', menu_id=int(menus_id), segment='deliverylist', menus=menus,
-                           menus1=menus1,
-                           deliverires=deliverires)
+    return redirect(url_for('delivery.deliverylist', menu_id=int(menus_id), segment='deliverylist', menus=menus,
+                               menus1=menus1,
+                               deliveries=deliverires))
