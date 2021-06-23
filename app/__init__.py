@@ -2,6 +2,8 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+import logging
+from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask, url_for
 from flask_login import LoginManager
@@ -41,4 +43,11 @@ def create_app(config):
     register_extensions(app)
     register_blueprints(app)
     configure_database(app)
+    formatter = logging.Formatter(
+        "[%(asctime)s][%(module)s:%(lineno)d][%(levelname)s][%(thread)d] - %(message)s")
+    handler = TimedRotatingFileHandler(
+        "logs/flask.log", when="D", interval=1, backupCount=15,
+        encoding="UTF-8", delay=False, utc=True)
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
     return app

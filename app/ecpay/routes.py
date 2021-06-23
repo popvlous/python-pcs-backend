@@ -1,6 +1,7 @@
 import collections
 import hashlib
 import json
+import urllib.parse
 from datetime import datetime
 from urllib.parse import quote_plus
 
@@ -10,6 +11,7 @@ from sqlalchemy import desc
 
 from flask_login import login_required, current_user
 
+from app.ecpay.ecpay_invoice.ecpay_main import EcpayInvoice
 from app.inventory.routes import lineNotifyMessage
 from app.menu.routes import getmenus
 from app.ecpay import blueprint
@@ -127,8 +129,10 @@ def payment_info():
     my_headers = {'Authorization': "Bearer " + data['token']}
     res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=payload,
                                      headers=my_headers)
+    if not res_order_details:
+        return render_template('ecpay/fail.html')
     order_details = json.loads(res_order_details.content.decode("utf-8").replace("'", '"'))
-
+    # 合併商品名稱
     order_details_total = order_details['total']
     line_items = order_details['line_items']
     total_product_name = ''
@@ -136,10 +140,39 @@ def payment_info():
         if line_item:
             line_items_name = line_item['name']
             total_product_name += line_items_name + '#'
+
+    # 獲取billing訊息
+    billing = order_details['billing']
+    billing_first_name = billing['first_name']
+    billing_last_name = billing['last_name']
+    invoice_name = billing_last_name + billing_first_name
+    invoice_address = billing['country'] + billing['state'] + billing['city'] + billing['address_1']
+    #invoice_address = billing['address_1']
+    invoice_item_name = ''
+    invoice_item_count = ''
+    invoice_item_word = ''
+    invoice_item_price = ''
+    invoice_item_tax_type = ''
+    if len(line_items) == 1:
+        invoice_item_name += line_item['name']
+        invoice_item_count += str(line_item['quantity'])
+        invoice_item_word += '件'
+        invoice_item_price += str(line_item['price'])
+        invoice_item_tax_type += '1'
+    else:
+        for line_item in line_items:
+            if line_item:
+                invoice_item_name += line_item['name'] + '|'
+                invoice_item_count += str(line_item['quantity']) + '|'
+                invoice_item_word += '包' + '|'
+                invoice_item_price += str(line_item['price']) + '|'
+                invoice_item_tax_type += '1' + '|'
+
     # 取得環境參數
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
+    #host_url = 'http://7d3c431b8ecb.ngrok.io'
 
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
@@ -149,18 +182,18 @@ def payment_info():
         'TotalAmount': int(order_details_total),
         'TradeDesc': 'PyrarcTest',
         'ItemName': total_product_name,
-        'ReturnURL': host_url+'/backend/ecpay/receive',
+        'ReturnURL': host_url + '/backend/ecpay/receive',
         'ChoosePayment': 'ALL',
         'ClientBackURL': 'https://store.pyrarc.com',
         'ItemURL': 'https://www.ecpay.com.tw/item_url.php',
         'Remark': '交易備註',
         'ChooseSubPayment': '',
-        'OrderResultURL': host_url+'/backend/ecpay/result',
+        'OrderResultURL': host_url + '/backend/ecpay/result',
         'NeedExtraPaidInfo': 'Y',
         'DeviceSource': '',
         'IgnorePayment': '',
         'PlatformID': '',
-        'InvoiceMark': 'N',
+        'InvoiceMark': 'Y',
         'CustomField1': '',
         'CustomField2': '',
         'CustomField3': '',
@@ -195,29 +228,36 @@ def payment_info():
     }
 
     inv_params = {
-        # 'RelateNumber': 'Tea0001', # 特店自訂編號
-        # 'CustomerID': 'TEA_0000001', # 客戶編號
-        # 'CustomerIdentifier': '53348111', # 統一編號
-        # 'CustomerName': '客戶名稱',
-        # 'CustomerAddr': '客戶地址',
-        # 'CustomerPhone': '0912345678', # 客戶手機號碼
-        # 'CustomerEmail': 'abc@ecpay.com.tw',
-        # 'ClearanceMark': '2', # 通關方式
-        # 'TaxType': '1', # 課稅類別
-        # 'CarruerType': '', # 載具類別
-        # 'CarruerNum': '', # 載具編號
-        # 'Donation': '1', # 捐贈註記
-        # 'LoveCode': '168001', # 捐贈碼
-        # 'Print': '1',
-        # 'InvoiceItemName': '測試商品1|測試商品2',
-        # 'InvoiceItemCount': '2|3',
-        # 'InvoiceItemWord': '個|包',
-        # 'InvoiceItemPrice': '35|10',
-        # 'InvoiceItemTaxType': '1|1',
-        # 'InvoiceRemark': '測試商品1的說明|測試商品2的說明',
-        # 'DelayDay': '0', # 延遲天數
-        # 'InvType': '07', # 字軌類別
+        'RelateNumber': str(order_id) + datetime.now().strftime("IN%Y%m%d%H%M%S"),  # 特店自訂編號
+        'CustomerID': str(order_details['customer_id']),  # 客戶編號
+        'CustomerIdentifier': '53348111',  # 統一編號
+        'CustomerName': invoice_name,
+        'CustomerAddr': invoice_address,
+        'CustomerPhone': billing['phone'],  # 客戶手機號碼
+        'CustomerEmail': billing['email'],
+        'ClearanceMark': '2',  # 通關方式
+        'TaxType': '1',  # 課稅類別
+        'CarruerType': '',  # 載具類別
+        'CarruerNum': '',  # 載具編號
+        'Donation': '0',  # 捐贈註記
+        'LoveCode': '',  # 捐贈碼
+        'Print': '1',
+        'InvoiceItemName': invoice_item_name,
+        'InvoiceItemCount': invoice_item_count,
+        'InvoiceItemWord': invoice_item_word,
+        'InvoiceItemPrice': invoice_item_price,
+        'InvoiceItemTaxType': invoice_item_tax_type,
+        'InvoiceRemark': '',
+        'DelayDay': 0,  # 延遲天數
+        'InvType': '07',  # 字軌類別
     }
+
+    # 修改訂單狀態
+    order_payload = {
+        "transaction_id": inv_params['RelateNumber']
+    }
+    r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
+                           headers=my_headers)
 
     # 建立實體
     ecpay_payment_sdk = module.ECPayPaymentSdk(MerchantID=params['MerchantID'],
@@ -325,7 +365,7 @@ def payment_end():
             }
             r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                                    headers=my_headers)
-            #return render_template('ecpay/success.html')
+            # return render_template('ecpay/success.html')
             return redirect(url_for('ecpay.payment_success', result='success'))
 
         # 判斷失敗
@@ -333,6 +373,42 @@ def payment_end():
 
             return render_template('ecpay/fail.html')
 
-@blueprint.route('/ecpay/result', methods=['GET', 'POST'])
+
+@blueprint.route('/ecpay/success', methods=['GET', 'POST'])
 def payment_success():
     return render_template('ecpay/success.html')
+
+
+@blueprint.route('/ecpay/qissue', methods=['GET', 'POST'])
+def payment_qissue():
+    ecpay_invoice = EcpayInvoice()
+
+    # 1.查詢transaction_id
+    order_id = request.args.get('oid')
+    r = requests.post(end_point_url_posts, data=payload)
+    jwt_info = r.content.decode("utf-8").replace("'", '"')
+    data = json.loads(jwt_info)
+    my_headers = {'Authorization': "Bearer " + data['token']}
+    res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=payload,
+                                     headers=my_headers)
+    if not res_order_details:
+        return render_template('ecpay/fail.html')
+    order_details = json.loads(res_order_details.content.decode("utf-8").replace("'", '"'))
+
+    # 2.寫入基本介接參數
+    ecpay_invoice.Invoice_Method = 'INVOICE_SEARCH'  # 請見16.1操作發票功能類別
+    ecpay_invoice.Invoice_Url = 'https://einvoice-stage.ecpay.com.tw/Query/Issue'
+    ecpay_invoice.MerchantID = '2000132'
+    ecpay_invoice.HashKey = 'ejCk326UnaZWKisg'
+    ecpay_invoice.HashIV = 'q9jcZX8Ib9LM8wYk'
+
+    # 3.寫入發票相關資訊
+    ecpay_invoice.Send['RelateNumber'] = order_details['transaction_id']  # 廠商自訂編號
+
+    # 4. 送出
+    aReturn_Info = ecpay_invoice.Check_Out()
+    # 5. 返回
+    print(aReturn_Info)
+    print(aReturn_Info['RtnMsg'])
+    aReturn_Info_json = json.dumps(aReturn_Info)
+    return aReturn_Info_json
