@@ -72,3 +72,23 @@ def historyBlockChainOrder(order_id):
     end_point_url_posts = "https://ccapi.stag.nexuera.com/orders/history/" + str(order_id)
     r = requests.post(end_point_url_posts, headers=headers, verify=False)
     return r.content
+
+
+def getToken():
+    r = requests.post(end_point_url_posts, data=payload)
+    jwt_info = r.content.decode("utf-8").replace("'", '"')
+    data = json.loads(jwt_info)
+    return data
+
+def getOrderDetail(order_id):
+    r = requests.post(end_point_url_posts, data=payload)
+    jwt_info = r.content.decode("utf-8").replace("'", '"')
+    data = json.loads(jwt_info)
+    my_headers = {'Authorization': "Bearer " + data['token']}
+    res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id),
+                                     data=payload,
+                                     headers=my_headers)
+    if not res_order_details:
+        return None
+    order_details = json.loads(res_order_details.content.decode("utf-8").replace("'", '"'))
+    return order_details

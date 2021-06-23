@@ -11,6 +11,7 @@ from sqlalchemy import desc
 
 from flask_login import login_required, current_user
 
+from app.base.util import getOrderDetail, getToken
 from app.ecpay.ecpay_invoice.ecpay_main import EcpayInvoice
 from app.inventory.routes import lineNotifyMessage
 from app.menu.routes import getmenus
@@ -120,12 +121,10 @@ def payment_info():
     # menus, menus1, menus_id = getmenus(34)
     # 獲取訂單訊息
     order_id = request.args.get('oid')
-    orderid = 'orders/' + str(order_id)
+    # orderid = 'orders/' + str(order_id)
     # 無jwt調用方式
     # order_details = wcapi.get(orderid).json()
-    r = requests.post(end_point_url_posts, data=payload)
-    jwt_info = r.content.decode("utf-8").replace("'", '"')
-    data = json.loads(jwt_info)
+    data = getToken()
     my_headers = {'Authorization': "Bearer " + data['token']}
     res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=payload,
                                      headers=my_headers)
@@ -172,7 +171,7 @@ def payment_info():
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
-    #host_url = 'http://7d3c431b8ecb.ngrok.io'
+    #host_url = 'http://1dd5283e6521.ngrok.io'
 
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
@@ -252,7 +251,7 @@ def payment_info():
         'InvType': '07',  # 字軌類別
     }
 
-    # 修改訂單狀態
+    # 回寫交易單號
     order_payload = {
         "transaction_id": inv_params['RelateNumber']
     }
@@ -350,26 +349,87 @@ def payment_end():
             #     tid=tid)
             result = request.form['MerchantTradeNo']
             order_id = result[:4]
-            r = requests.post(end_point_url_posts, data=payload)
-            jwt_info = r.content.decode("utf-8").replace("'", '"')
-            data = json.loads(jwt_info)
+            data = getToken()
             my_headers = {'Authorization': "Bearer " + data['token']}
             # res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id),
             #                                  data=payload,
             #                                  headers=my_headers)
             # order_details = json.loads(res_order_details.content.decode("utf-8").replace("'", '"'))
 
-            # 修改訂單狀態
+            # 修改訂單狀態為完成
             order_payload = {
                 "status": "completed"
             }
             r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                                    headers=my_headers)
+            #查詢發票號碼
+            ecpay_invoice = EcpayInvoice()
+
+            # 1.查詢transaction_id
+            order_details = getOrderDetail(order_id)
+
+            if not order_details:
+                return render_template('ecpay/fail.html')
+
+            # 2.寫入基本介接參數
+            ecpay_invoice.Invoice_Method = 'INVOICE_SEARCH'  # 請見16.1操作發票功能類別
+            ecpay_invoice.Invoice_Url = 'https://einvoice-stage.ecpay.com.tw/Query/Issue'
+            ecpay_invoice.MerchantID = '2000132'
+            ecpay_invoice.HashKey = 'ejCk326UnaZWKisg'
+            ecpay_invoice.HashIV = 'q9jcZX8Ib9LM8wYk'
+
+            # 3.寫入發票相關資訊
+            ecpay_invoice.Send['RelateNumber'] = order_details['transaction_id']  # 廠商自訂編號
+
+            # 4. 送出
+            aReturn_Info = ecpay_invoice.Check_Out()
+            # 5. 返回
+            print('INVOICE_SEARCH')
+            print(aReturn_Info)
+            print(aReturn_Info['RtnMsg'])
+            if aReturn_Info['RtnCode'] != '1':
+                return redirect(url_for('ecpay.payment_noinvoice', result='success'))
+            IIS_Number = aReturn_Info['IIS_Number']
+
+            #發送發票通知
+
+            billing = order_details['billing']
+
+            # 2.寫入基本介接參數
+            ecpay_invoice.Invoice_Method = 'INVOICE_NOTIFY'
+            ecpay_invoice.Invoice_Url = 'https://einvoice-stage.ecpay.com.tw/Notify/InvoiceNotify'
+
+            # 3.寫入發票相關資訊
+            ecpay_invoice.Send['InvoiceNo'] = IIS_Number  # 發票號碼
+            ecpay_invoice.Send['NotifyMail'] = billing['email']  # 發送電子信箱
+            ecpay_invoice.Send['Notify'] = 'E'  # 發送方式
+            ecpay_invoice.Send['InvoiceTag'] = 'I'  # 發送內容類型
+            ecpay_invoice.Send['Notified'] = 'C'
+
+            # 4. 送出
+            aReturn_Info_notify = ecpay_invoice.Check_Out()
+            # 5. 返回
+            print('INVOICE_NOTIFY')
+            print(aReturn_Info_notify)
+            print(aReturn_Info_notify['RtnMsg'])
+
             # return render_template('ecpay/success.html')
             return redirect(url_for('ecpay.payment_success', result='success'))
 
         # 判斷失敗
         else:
+            result = request.form['MerchantTradeNo']
+            order_id = result[:4]
+            data = getToken()
+            my_headers = {'Authorization': "Bearer " + data['token']}
+            # 修改訂單狀態為失效
+            order_payload = {
+                "status": "failed"
+            }
+            r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
+                                   headers=my_headers)
+            # return render_template('ecpay/success.html')
+            return redirect(url_for('ecpay.payment_success', result='success'))
 
             return render_template('ecpay/fail.html')
 
@@ -377,6 +437,10 @@ def payment_end():
 @blueprint.route('/ecpay/success', methods=['GET', 'POST'])
 def payment_success():
     return render_template('ecpay/success.html')
+
+@blueprint.route('/ecpay/noinvoice', methods=['GET', 'POST'])
+def payment_noinvoice():
+    return render_template('ecpay/noinvoice.html')
 
 
 @blueprint.route('/ecpay/qissue', methods=['GET', 'POST'])
