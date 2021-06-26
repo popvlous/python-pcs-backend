@@ -435,7 +435,7 @@ def payment_end():
             r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                                    headers=my_headers)
             # return render_template('ecpay/success.html')
-            return redirect(url_for('ecpay.payment_fail', result='fail'))
+            return redirect(url_for('ecpay.payment_fail', result='failed'))
 
 @blueprint.route('/ecpay/success', methods=['GET', 'POST'])
 def payment_success():
