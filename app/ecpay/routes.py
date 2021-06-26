@@ -166,12 +166,18 @@ def payment_info():
                 invoice_item_word += '包' + '|'
                 invoice_item_price += str(line_item['price']) + '|'
                 invoice_item_tax_type += '1' + '|'
+        invoice_item_name = invoice_item_name[0:-1]
+        invoice_item_count = invoice_item_count[0:-1]
+        invoice_item_word = invoice_item_word[0:-1]
+        invoice_item_price = invoice_item_price[0:-1]
+        invoice_item_tax_type = invoice_item_tax_type[0:-1]
+
 
     # 取得環境參數
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
-    #host_url = 'http://1dd5283e6521.ngrok.io'
+    #host_url = 'http://4aab67f908a5.ngrok.io'
 
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
