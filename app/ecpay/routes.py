@@ -177,7 +177,7 @@ def payment_info():
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
-    #host_url = 'http://4aab67f908a5.ngrok.io'
+    #host_url = 'http://c6d0366fa101.ngrok.io'
 
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
@@ -436,6 +436,8 @@ def payment_end():
                                    headers=my_headers)
             # return render_template('ecpay/success.html')
             return redirect(url_for('ecpay.payment_fail', result='failed'))
+            #return render_template('ecpay/fail.html')
+
 
 @blueprint.route('/ecpay/success', methods=['GET', 'POST'])
 def payment_success():
