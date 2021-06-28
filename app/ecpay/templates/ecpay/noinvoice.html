@@ -2,20 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Success</title>
+    <title>Order Success</title>
 </head>
+<style>
+    body{
+  height: 100vh;
+  background: #f3f7f0;
+}
+
+a{
+  position: relative;
+  color: #241e3e;
+  text-decoration: none;
+  transition: all ease .5s;
+}
+
+a.connection {
+  font-weight: bold;
+}
+
+a.connection::after{
+  content: "";
+  position: absolute;
+  margin-left: -100%;
+  width: 100%;
+  height: 100%;
+  border-bottom: 1px dotted #241e3e;
+}
+
+a.connection:hover::after{
+  border-bottom: 0;
+}
+
+a.connection:hover{
+  color: #6F8ABE;
+}
+
+a.back {
+  display: block;
+  max-width: 10%;
+  margin: auto;
+  padding: .5rem 1rem;
+  margin-top: 5rem;
+  border-radius: .25rem;
+  background: rgba(36,30,62, .08);
+}
+
+a.back:hover {
+  background: rgba(36,30,62, .18);
+}
+
+.box-wrap {
+  height: 100vh;
+  text-align: center;
+}
+
+.box-wrap :before{
+  content: "";
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.orderDescription{
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.orderDescription h3{
+  width: 50%;
+  line-height: 1rem;
+  margin: auto;
+  margin-top: 10rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  background: #241E3E;
+  color: #f3f7f0;
+  border-radius: .5rem;
+}
+</style>
 <body>
-<div class="jumbotron text-center">
-  <h1 class="display-3">感謝您!</h1>
-  <p class="lead"><strong>訂單已付款完成</strong>感謝您對采賦嚴選的支持與愛護，您可以隨時在ＡＰＰ裡查詢最新的進度</p>
-    <p class="lead">發票隨後開立</p>
-  <hr>
-  <p>
-    Having trouble? <a href="">Contact us</a>
-  </p>
-  <p class="lead">
-    <a class="btn btn-primary btn-sm" href="https://store.pyrarc.com" role="button">回到首頁</a>
-  </p>
-</div>
+  <main class="box-wrap">
+    <section class="orderDescription">
+      <h3>訂單已付款完成</h3>
+      <p>感謝您對米賦嚴選的支持與愛護，您可以隨時在ＡＰＰ裡查詢最新的進度，發票隨後開立。</p >
+      <p>Having trouble? <a href="" class="connection">Contact us</a ></p >
+      <a href="" class="back">回到首頁</a >
+    </section>
+  </main>
 </body>
 </html>

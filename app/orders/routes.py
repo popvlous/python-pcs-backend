@@ -1,17 +1,20 @@
 import json
 
-from flask import render_template, request
+from flask import render_template, request, current_app
 from app.base.models import User, Orders, SysMenu
 from flask_login import login_required, current_user
 
 from app.base.util import queryBlockChainOrder, historyBlockChainOrder
 from app.menu.routes import getmenus
 from app.orders import blueprint
+import logging
 
+logger = logging.getLogger('flask.app.module')
 
 @blueprint.route('/orderlist')
 @login_required
 def orderlist():
+    current_app.logger.info('orderlist')
     menus, menus1, menus_id = getmenus(12)
     orders = Orders.query.filter().all()
     # 確認區塊鏈是否存在
