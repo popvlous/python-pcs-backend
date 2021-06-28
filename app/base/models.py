@@ -116,7 +116,7 @@ class Orders(db.Model):
     billing_state = db.Column(db.String(50), nullable=True)
     billing_city = db.Column(db.String(50), nullable=True)
     billing_address_1 = db.Column(db.String(500), nullable=True )
-    tx_id = db.Column(db.String(100), nullable=True)
+    tx_id = db.Column(db.String(200), nullable=True)
 
     def __init__(self, order_id, parent_id, state, billing_first_name, billing_last_name):
         self.order_id = order_id

@@ -26,7 +26,7 @@ class Delivery(db.Model, UserMixin):
     shipping_phone = db.Column(db.String(50), nullable=True)
     shipment_number = db.Column(db.String(50), nullable=True)
     remark = db.Column(db.String(50))
-    tx_id = db.Column(db.String(100), nullable=True)
+    tx_id = db.Column(db.String(200), nullable=True)
 
     def __init__(self, user_id, create_by, order_source, shipping_first_name, shipping_last_name, shipping_company,
                  shipping_address_1, shipping_address_2, shipping_city, shipping_state, shipping_postcode, shipping_country,
