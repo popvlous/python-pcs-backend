@@ -146,7 +146,7 @@ def payment_info():
     billing_last_name = billing['last_name']
     invoice_name = billing_last_name + billing_first_name
     invoice_address = billing['country'] + billing['state'] + billing['city'] + billing['address_1']
-    #invoice_address = billing['address_1']
+    # invoice_address = billing['address_1']
     invoice_item_name = ''
     invoice_item_count = ''
     invoice_item_word = ''
@@ -172,12 +172,11 @@ def payment_info():
         invoice_item_price = invoice_item_price[0:-1]
         invoice_item_tax_type = invoice_item_tax_type[0:-1]
 
-
     # 取得環境參數
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
-    #host_url = 'http://c6d0366fa101.ngrok.io'
+    # host_url = 'http://c6d0366fa101.ngrok.io'
 
     order_params = {
         'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
@@ -333,6 +332,7 @@ def payment_end():
 
         # 判斷成功
         if result == 'Succeeded':
+            print('Succeeded')
             # trade_detail.status = '待處理'
             # commit_list = []
             #
@@ -355,6 +355,7 @@ def payment_end():
             #     tid=tid)
             result = request.form['MerchantTradeNo']
             order_id = result[:4]
+            print('order_id:' + order_id)
             data = getToken()
             my_headers = {'Authorization': "Bearer " + data['token']}
             # res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id),
@@ -368,7 +369,7 @@ def payment_end():
             }
             r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                                    headers=my_headers)
-            #查詢發票號碼
+            # 查詢發票號碼
             ecpay_invoice = EcpayInvoice()
 
             # 1.查詢transaction_id
@@ -397,7 +398,7 @@ def payment_end():
                 return redirect(url_for('ecpay.payment_noinvoice', result='success'))
             IIS_Number = aReturn_Info['IIS_Number']
 
-            #發送發票通知
+            # 發送發票通知
 
             billing = order_details['billing']
 
@@ -436,16 +437,18 @@ def payment_end():
                                    headers=my_headers)
             # return render_template('ecpay/success.html')
             return redirect(url_for('ecpay.payment_fail', result='failed'))
-            #return render_template('ecpay/fail.html')
+            # return render_template('ecpay/fail.html')
 
 
 @blueprint.route('/ecpay/success', methods=['GET', 'POST'])
 def payment_success():
     return render_template('ecpay/success.html')
 
+
 @blueprint.route('/ecpay/noinvoice', methods=['GET', 'POST'])
 def payment_noinvoice():
     return render_template('ecpay/noinvoice.html')
+
 
 @blueprint.route('/ecpay/fail', methods=['GET', 'POST'])
 def payment_fail():
