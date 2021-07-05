@@ -316,6 +316,7 @@ def payment_end():
 
         # 接收 ECpay 刷卡回傳資訊
         result = request.form['RtnMsg']
+        print('result:' + result)
         tid = request.form['CustomField1']
 
         # # 取得交易使用者資訊
