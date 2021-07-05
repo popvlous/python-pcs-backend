@@ -294,8 +294,11 @@ def payment_info():
 
 @blueprint.route('/ecpay/receive', methods=['GET', 'POST'])
 def payment_receive():
+    code = request.form['RtnCode']
+    print('receive code:' + code)
     result = request.form['RtnMsg']
     print('receive result:' + result)
+    result = request.form['RtnCode']
     tid = request.form['CustomField1']
     if not result:
         return jsonify({
