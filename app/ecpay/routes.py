@@ -425,6 +425,7 @@ def payment_end():
 
         # 判斷失敗
         else:
+            print('failed')
             result = request.form['MerchantTradeNo']
             order_id = result[:4]
             data = getToken()
