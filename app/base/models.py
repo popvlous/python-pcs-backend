@@ -117,6 +117,10 @@ class Orders(db.Model):
     billing_city = db.Column(db.String(50), nullable=True)
     billing_address_1 = db.Column(db.String(500), nullable=True )
     tx_id = db.Column(db.String(200), nullable=True)
+    customer_identifier = db.Column(db.Integer)
+    carruer_type = db.Column(db.Integer)
+    carruer_num = db.Column(db.String(100), nullable=True)
+    lovecode = db.Column(db.String(100), nullable=True)
 
     def __init__(self, order_id, parent_id, state, billing_first_name, billing_last_name):
         self.order_id = order_id

@@ -11,6 +11,7 @@ from sqlalchemy import desc
 
 from flask_login import login_required, current_user
 
+from app.base.models import Orders
 from app.base.util import getOrderDetail, getToken
 from app.ecpay.ecpay_invoice.ecpay_main import EcpayInvoice
 from app.inventory.routes import lineNotifyMessage
@@ -55,12 +56,13 @@ from datetime import datetime
 class Params:
     def __init__(self):
         web_type = 'test'
+        # web_type = 'offical'
         if web_type == 'offical':
             # 正式環境
             self.params = {
-                'MerchantID': '隱藏',
-                'HashKey': '隱藏',
-                'HashIV': '隱藏',
+                'MerchantID': '3249457',
+                'HashKey': 'Z61iccFT4JdKlY8k',
+                'HashIV': 'qciTASNpV2vhU8g0',
                 'action_url':
                     'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5'
             }
@@ -176,10 +178,11 @@ def payment_info():
     params = Params.get_params()
 
     host_url = 'https://storeapi.pyrarc.com'
-    # host_url = 'http://c6d0366fa101.ngrok.io'
+    #host_url = 'http://8d8e6fb00a65.ngrok.io'
 
     order_params = {
-        'MerchantTradeNo': str(order_id) + datetime.now().strftime("NO%Y%m%d%H%M%S"),
+        'MerchantTradeNo': str(order_id) + datetime.now().strftime("E%Y%m%d%H%M%S"),
+        # 'MerchantTradeNo': str(order_id),
         'StoreID': '',
         'MerchantTradeDate': datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
         'PaymentType': 'aio',
@@ -231,28 +234,56 @@ def payment_info():
         'UnionPay': 0,
     }
 
+    # 取得發票載具訊息
+    order_info = Orders.query.filter_by(order_id=order_details['id'], state='pending').first()
+    if not order_info:
+        return jsonify({
+            'success': False,
+            'msg': ' order is not exist in pcs'
+        })
+    carruer_type = ''
+    carruer_num = ''
+    donation = '0'
+    lovecode = ''
+    customer_identifier = ''
+    print_invoice = '0'
+    if order_info.carruer_type == 1 or order_info.carruer_type == 2 or order_info.carruer_type == 3:
+        carruer_type = order_info.carruer_type
+        carruer_num = order_info.carruer_num
+    if order_info.carruer_type == 4:
+        customer_identifier = order_info.customer_identifier
+        print_invoice = '1'
+    if order_info.carruer_type == 5:
+        donation = '1'
+        lovecode = order_info.lovecode
+        print_invoice = '0'
+    #預設印紙本發票
+    if not order_info.carruer_type:
+        print_invoice = '1'
+
     inv_params = {
         'RelateNumber': str(order_id) + datetime.now().strftime("IN%Y%m%d%H%M%S"),  # 特店自訂編號
+        # 'RelateNumber': str(order_id),  # 特店自訂編號
         'CustomerID': str(order_details['customer_id']),  # 客戶編號
-        'CustomerIdentifier': '53348111',  # 統一編號
+        'CustomerIdentifier': str(customer_identifier),  # 統一編號
         'CustomerName': invoice_name,
         'CustomerAddr': invoice_address,
         'CustomerPhone': billing['phone'],  # 客戶手機號碼
         'CustomerEmail': billing['email'],
         'ClearanceMark': '2',  # 通關方式
         'TaxType': '1',  # 課稅類別
-        'CarruerType': '',  # 載具類別
-        'CarruerNum': '',  # 載具編號
-        'Donation': '0',  # 捐贈註記
-        'LoveCode': '',  # 捐贈碼
-        'Print': '1',
+        'CarruerType': str(carruer_type),  # 載具類別
+        'CarruerNum': carruer_num,  # 載具編號
+        'Donation': donation,  # 捐贈註記
+        'LoveCode': lovecode,  # 捐贈碼
+        'Print': print_invoice,
         'InvoiceItemName': invoice_item_name,
         'InvoiceItemCount': invoice_item_count,
         'InvoiceItemWord': invoice_item_word,
         'InvoiceItemPrice': invoice_item_price,
         'InvoiceItemTaxType': invoice_item_tax_type,
         'InvoiceRemark': '',
-        'DelayDay': 0,  # 延遲天數
+        'DelayDay': 0,  # 延遲天數 正式環境14天
         'InvType': '07',  # 字軌類別
     }
 
@@ -260,6 +291,8 @@ def payment_info():
     order_payload = {
         "transaction_id": inv_params['RelateNumber']
     }
+    if inv_params['RelateNumber']:
+        print('RelateNumber:' + inv_params['RelateNumber'])
     r_order = requests.put('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id), data=order_payload,
                            headers=my_headers)
 
@@ -363,10 +396,6 @@ def payment_end():
             print('order_id:' + order_id)
             data = getToken()
             my_headers = {'Authorization': "Bearer " + data['token']}
-            # res_order_details = requests.get('https://store.pyrarc.com/wp-json/wc/v3/orders/' + str(order_id),
-            #                                  data=payload,
-            #                                  headers=my_headers)
-            # order_details = json.loads(res_order_details.content.decode("utf-8").replace("'", '"'))
 
             # 修改訂單狀態為完成
             order_payload = {
@@ -383,12 +412,19 @@ def payment_end():
             if not order_details:
                 return render_template('ecpay/fail.html')
 
-            # 2.寫入基本介接參數
+            # 2.寫入基本介接參數(測試環境)
             ecpay_invoice.Invoice_Method = 'INVOICE_SEARCH'  # 請見16.1操作發票功能類別
             ecpay_invoice.Invoice_Url = 'https://einvoice-stage.ecpay.com.tw/Query/Issue'
             ecpay_invoice.MerchantID = '2000132'
             ecpay_invoice.HashKey = 'ejCk326UnaZWKisg'
             ecpay_invoice.HashIV = 'q9jcZX8Ib9LM8wYk'
+
+            # 2.寫入基本介接參數(正式環境)
+            # ecpay_invoice.Invoice_Method = 'INVOICE_SEARCH'  # 請見16.1操作發票功能類別
+            # ecpay_invoice.Invoice_Url = 'https://einvoice.ecpay.com.tw/Query/Issue'
+            # ecpay_invoice.MerchantID = '3249457'
+            # ecpay_invoice.HashKey = 'Z61iccFT4JdKlY8k'
+            # ecpay_invoice.HashIV = 'qciTASNpV2vhU8g0'
 
             # 3.寫入發票相關資訊
             ecpay_invoice.Send['RelateNumber'] = order_details['transaction_id']  # 廠商自訂編號
