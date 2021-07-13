@@ -252,6 +252,8 @@ def payment_info():
         carruer_num = order_info.carruer_num
     if order_info.carruer_type == 4:
         customer_identifier = order_info.customer_identifier
+        print('customer_identifier:' + customer_identifier)
+        print('customer_identifier len:' + str(len(customer_identifier)))
         print_invoice = '1'
     if order_info.carruer_type == 5:
         donation = '1'
@@ -265,7 +267,7 @@ def payment_info():
         'RelateNumber': str(order_id) + datetime.now().strftime("IN%Y%m%d%H%M%S"),  # 特店自訂編號
         # 'RelateNumber': str(order_id),  # 特店自訂編號
         'CustomerID': str(order_details['customer_id']),  # 客戶編號
-        'CustomerIdentifier': customer_identifier,  # 統一編號
+        'CustomerIdentifier': str(customer_identifier),  # 統一編號
         'CustomerName': invoice_name,
         'CustomerAddr': invoice_address,
         'CustomerPhone': billing['phone'],  # 客戶手機號碼
