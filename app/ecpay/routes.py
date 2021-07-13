@@ -252,7 +252,7 @@ def payment_info():
         carruer_num = order_info.carruer_num
     if order_info.carruer_type == 4:
         customer_identifier = order_info.customer_identifier
-        print('customer_identifier:' + customer_identifier)
+        print('customer_identifier:' + str(customer_identifier))
         print('customer_identifier len:' + str(len(customer_identifier)))
         print_invoice = '1'
     if order_info.carruer_type == 5:
