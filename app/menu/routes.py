@@ -39,12 +39,19 @@ def getmenus(menu_id=None):
         user_id = current_user.User[0].user_id
     userinfo = RolesUsers.query.join(User, RolesUsers.user_id == User.id).filter(RolesUsers.user_id == user_id).all()
     # 獲取對應的菜單
+    unique =[]
+    menuslist = []
+    menuslist1 = []
     for userdetail in userinfo:
         rolelist.append(userdetail.role_id)
-    #menus = db.session.query(RolesMenus).join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
-    #menus1 = db.session.query(RolesMenus).join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
-    menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
-    menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
+    menus = db.session.query(RolesMenus).join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
+    for rolemenulist in menus:
+        if rolemenulist.menu_id not in unique:
+            unique.append(rolemenulist.menu_id)
+            menuslist.append(rolemenulist)
+            menuslist1.append(rolemenulist)
+    #menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
+    #menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
     # menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     # menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     # menus = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
@@ -52,7 +59,7 @@ def getmenus(menu_id=None):
     # menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
     menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.menu_id == menu_id).all()
     menus_id = menus2[0].menu.ParentId
-    return menus, menus1, menus_id
+    return menuslist, menuslist1, menus_id
 
 
 @blueprint.route('/menuindex')
