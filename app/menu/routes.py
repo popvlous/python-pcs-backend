@@ -41,8 +41,8 @@ def getmenus(menu_id=None):
     #獲取對應的菜單
     for userdetail in userinfo:
         rolelist.append(userdetail.role_id)
-    menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
-    menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
+    menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
+    menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
     #menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     #menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     # menus = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
