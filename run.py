@@ -30,7 +30,7 @@ except KeyError:
 
 app = create_app( app_config )
 moment = Moment(app)
-mail = Mail(app)
+#mail = Mail(app)
 Migrate(app, db)
 
 if DEBUG:

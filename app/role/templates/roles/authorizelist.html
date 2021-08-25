@@ -77,9 +77,9 @@
                                                 <td>{{ auth.role_id }}  </td>
                                                 <td>{{ auth.role.role_name }}  </td>
                                                 <td>
-                                                    <a href="{{url_for('roles.authorizelist', mid=auth.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.authorizeedit', mid=auth.id)}}" class="btn btn-primary btn-xs"
                                                        title="編輯">編輯 </a>
-                                                    <a href="{{url_for('roles.authorizelist', mid=auth.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.authorizedelete', mid=auth.id)}}" class="btn btn-primary btn-xs"
                                                        title="刪除">刪除</a>
                                                 </td>
                                             </tr>

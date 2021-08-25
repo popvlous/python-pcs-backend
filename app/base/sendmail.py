@@ -3,7 +3,7 @@ from threading import Thread
 from flask import current_app, render_template, app, request
 from flask_mail import Message
 
-from run import mail
+from flask_mail import Message, Mail
 
 
 def send_mail(sender, recipients, subject, template, mailtype='html', **kwargs):
@@ -37,25 +37,23 @@ def send_mail(sender, recipients, subject, template, mailtype='html', **kwargs):
     # return thr
 
 
-    subject = subject
-    # message = '這是 flask-mail example <br> <br>' \
-    #           '附上一張圖片 <br> <br>' \
-    #           '<b  style="color:#FF4E4E" >新垣結衣</b>'
+    #獲取目前的app
+    app = current_app._get_current_object()
+    msg = Message(subject,
+                      sender=sender,
+                  recipients=recipients)
     if mailtype == 'html':
-        message = render_template(template + '.html', **kwargs)
+        msg.html = render_template(template + '.html', **kwargs)
     elif mailtype == 'txt':
-        message = render_template(template + '.txt', **kwargs)
+        msg.body = render_template(template + '.txt', **kwargs)
     elif mailtype == 'body':
-        message = template
-    msg = Message(
-        subject=subject,
-        recipients=recipients,
-        html=message
-    )
-    # msg.body = '純文字'
-    # with app.open_resource("static/images/image.jpg") as fp:
-    #     msg.attach("image.jpg", "image/jpg", fp.read())
-    mail.send(msg)
+        msg.body = template
+
+    #  使用多線程
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    thr.join()
+    return thr
 
 
 def send_async_email(app, msg):
@@ -67,4 +65,5 @@ def send_async_email(app, msg):
     :return:
     """
     with app.app_context():
+        mail = Mail(app)
         mail.send(msg)

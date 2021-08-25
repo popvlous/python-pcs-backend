@@ -7,7 +7,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask, url_for
 from flask_login import LoginManager
-from flask_moment import Moment
+#from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
 

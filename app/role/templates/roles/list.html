@@ -75,9 +75,9 @@
                                                 <td>{{ role.role_status }}  </td>
                                                 <td>{{ role.base_create_time }}  </td>
                                                 <td>
-                                                    <a href="{{url_for('roles.rolelist', mid=role.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.roleedit', mid=role.id)}}" class="btn btn-primary btn-xs"
                                                        title="編輯">編輯 </a>
-                                                    <a href="{{url_for('roles.rolelist', mid=role.id)}}" class="btn btn-primary btn-xs"
+                                                    <a href="{{url_for('roles.roledelete', mid=role.id)}}" class="btn btn-primary btn-xs"
                                                        title="刪除">刪除</a>
                                                 </td>
                                             </tr>

@@ -27,12 +27,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>角色使用者權限</h1>
+                        <h2>編輯角色</h2>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Roles</a></li>
-                            <li class="breadcrumb-item active">Users</li>
+                            <li class="breadcrumb-item active">Edit</li>
                         </ol>
                     </div>
                 </div>
@@ -43,49 +43,26 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <form action="" method="POST" name="form1">
-                                <div class="card-header">
-                                    <table class="table table-bordered table-striped">
-                                        <tr>
-                                            <!--                <td>類別ID</td>-->
-                                            <!--                <td><input type="text" id="category_id" name="category_id" class="form-control" placeholder="category id"/></td>-->
-                                            <td>角色使用者列表</td>
-                                            <td><input type="text" id="menu_name" name="menu_name" class="form-control"
-                                                       placeholder="category description"/></td>
-                                            <td colspan="2"><input type="submit" name="button" id="button" value="查詢"
-                                                                   class="btn btn-primary btn-xs">
-                                            </td>
-                                        </tr>
-                                    </table>
+                            <form method="POST" action="{{ url_for('roles.roleedit', mid=role.id) }}">
+                                <!-- "."表示執行相同的url -->
+                                {#                                {% csrf_token %}#}
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">編輯角色訊息</h3>
+                                    </div>
                                 </div>
                                 <div class="card-body">
-                                    <table id="TableMenuList" class="table table-bordered table-striped">
-                                        <thead>
-                                        <th>id</th>
-                                        <th>使用者id</th>
-                                        <th>使用者名稱</th>
-                                        <th>角色id</th>
-                                        <th>角色名稱</th>
-                                        <th>操作</th>
-                                        </thead>
-                                        <tbody>
-                                        {% for roleuser in roleusers %}
-                                            <tr>
-                                                <td>{{ roleuser.id }}  </td>
-                                                <td>{{ roleuser.user_id }}  </td>
-                                                <td>{{ roleuser.user.username }}  </td>
-                                                <td>{{ roleuser.role_id }}  </td>
-                                                <td>{{ roleuser.role.role_name }}  </td>
-                                                <td>
-                                                    <a href="{{url_for('roles.roleuseredit', mid=roleuser.id)}}" class="btn btn-primary btn-xs"
-                                                       title="編輯">編輯 </a>
-                                                    <a href="{{url_for('roles.roleuserdelete', mid=roleuser.id)}}" class="btn btn-primary btn-xs"
-                                                       title="刪除">刪除</a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="form-group">
+                                        <label for="role_name">角色名稱</label>
+                                        <input type="text" class="form-control" id="role_name" name="role_name" value="{{ role.role_name }}"
+                                               placeholder="Role Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" name="button" id="button" value="送出"
+                                               class="btn btn-primary btn-xs">
+                                        <input type="reset" name="button2" id="button2" value="重設"
+                                               class="btn btn-primary btn-xs">
+                                    </div>
                                     <span style="color:red">{{ message }}</span>
                                 </div>
                             </form>
@@ -125,6 +102,28 @@
                 "autoWidth": false    <!-- 固定宽度 -->
             });
         })
+
+        {#        $("#btnAddComment").click(function () {
+                    insertWord($("#txtCommentAdd").val());
+                });#}
+
+        $("#menu_type").change(function () {
+            insertMenu()
+        });
+
+        function insertMenu() {
+            if ($('#menu_type').val() == 0) {
+                document.getElementById("mtop").style.display = "none"
+                document.getElementById("mtarget").style.display = "none"
+                alert("請先選擇菜單類型")
+            } else if ($('#menu_type').val() == 2) {
+                document.getElementById("mtop").style.display = ""
+                document.getElementById("mtarget").style.display = "none"
+            } else {
+                document.getElementById("mtop").style.display = "none"
+                document.getElementById("mtarget").style.display = ""
+            }
+        }
     </script>
 
 {% endblock javascripts %}

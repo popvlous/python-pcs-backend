@@ -20435,6 +20435,8 @@ html.maximized-card {
   height: 100vh;
   -ms-flex-pack: center;
   justify-content: center;
+  background: url("../img/login.jpg") no-repeat center center fixed;
+  background-size: cover;
 }
 
 .login-box,
