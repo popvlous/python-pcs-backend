@@ -34,20 +34,22 @@ def getmenus_no_id():
 def getmenus(menu_id=None):
     user_id = None
     rolelist = []
-    #判斷是否有登入，有登入的話擇取對應的user_id
+    # 判斷是否有登入，有登入的話擇取對應的user_id
     if current_user.is_active == True:
         user_id = current_user.User[0].user_id
     userinfo = RolesUsers.query.join(User, RolesUsers.user_id == User.id).filter(RolesUsers.user_id == user_id).all()
-    #獲取對應的菜單
+    # 獲取對應的菜單
     for userdetail in userinfo:
         rolelist.append(userdetail.role_id)
-    menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
-    menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
-    #menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
-    #menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
+    menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(
+        RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
+    menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(
+        RolesMenus.role_id.in_(rolelist)).group_by(RolesMenus.menu_id).all()
+    # menus = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
+    # menus1 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id == userinfo[0].role.id).all()
     # menus = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
     # menus1 = SysMenu.query.filter().order_by(SysMenu.MenuSort.asc())
-    #menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
+    # menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.role_id.in_(rolelist)).all()
     menus2 = RolesMenus.query.join(Role, RolesMenus.role_id == Role.id).filter(RolesMenus.menu_id == menu_id).all()
     menus_id = menus2[0].menu.ParentId
     return menus, menus1, menus_id
@@ -66,7 +68,8 @@ def menuindex():
 def menulist():
     menus, menus1, menus_id = getmenus(2)
     menuinfos = SysMenu.query.filter().all()
-    return render_template('list.html', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1, menuinfos=menuinfos)
+    return render_template('list.html', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1,
+                           menuinfos=menuinfos)
 
 
 @blueprint.route('/menuadd', methods=['GET', 'POST'])
@@ -170,4 +173,6 @@ def menudel():
         except:
             message = "讀取錯誤!"
     menuinfos = SysMenu.query.filter().all()
-    return redirect(url_for('menu_blueprint.menulist', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1, menuinfos=menuinfos))
+    return redirect(
+        url_for('menu_blueprint.menulist', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1,
+                menuinfos=menuinfos))
