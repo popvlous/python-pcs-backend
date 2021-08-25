@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from app.menu import blueprint
 from app.base.models import User, Orders, SysMenu
@@ -159,7 +159,7 @@ def menuedit():
 @login_required
 def menudel():
     message = None
-    menus, menus1, menu_id = getmenus(2)
+    menus, menus1, menus_id = getmenus(2)
     menu_id = request.args.get('mid')
     if menu_id != None:
         try:
@@ -167,4 +167,5 @@ def menudel():
             db.session.commit()
         except:
             message = "讀取錯誤!"
-    return render_template('list.html', segment='menulist', menus=menus, menus1=menus1)
+    menuinfos = SysMenu.query.filter().all()
+    return redirect(url_for('menu_blueprint.menulist', menu_id=int(menus_id), segment='menulist', menus=menus, menus1=menus1, menuinfos=menuinfos))
